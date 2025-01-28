@@ -94,7 +94,7 @@ const BenfeksPage = () => {
     Modal.confirm({
       title: "Are you sure you want to delete this benfek?",
       onOk: async () => {
-        await api.delete(`http://localhost:8000/api/health-conditions/${id}/`);
+        await api.delete(`https://www.hls.com.ng/api/health-conditions/${id}/`);
 
         setBenfeksData(benfeksData.filter((benfek) => benfek.id !== id));
         notification.success({ message: "Benfek deleted successfully!" });
