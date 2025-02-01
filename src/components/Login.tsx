@@ -40,8 +40,8 @@ function Auth() {
           username,
           password,
           "principal",
-          accountNumber,
           pharmacyName,   // Send pharmacy name for registration
+          accountNumber,
           pharmacyAddress, // Send pharmacy address for registration
           phone            // Send phone for registration
         );
