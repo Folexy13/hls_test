@@ -1,32 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import {
-  Table,
-  Modal,
-  Button,
-  Form,
-  Input,
-  notification,
-  Dropdown,
-  Menu,
-  Collapse,
-} from "antd";
+import { Table, Input, Collapse } from "antd";
 import { api, apiBaseUrl } from "../service/apiService";
-import { MoreOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
 const BenfeksPage = () => {
   const navigate = useNavigate();
-  const [form] = Form.useForm();
   const [benfeksData, setBenfeksData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     api
       .get(`${apiBaseUrl}/health-conditions/`)
-      .then((response) => setBenfeksData(response.data))
+      .then((response) => {
+        setBenfeksData(response.data);
+        setFilteredData(response.data);
+      })
       .catch((error) => console.error("Error fetching benfeks data:", error));
 
     const handleResize = () => {
@@ -37,45 +30,19 @@ const BenfeksPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleAddAccount = () => {
-    navigate("/add-benfek");
-  };
-
-
-  const handleDelete = (id: any) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this benfek?",
-      onOk: async () => {
-        await api.delete(`https://www.hls.com.ng/api/health-conditions/${id}/`);
-
-        setBenfeksData(benfeksData.filter((benfek) => benfek.id !== id));
-        notification.success({ message: "Benfek deleted successfully!" });
-      },
-    });
+  const handleSearch = (e: any) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    const filtered = benfeksData.filter((benfek) =>
+      benfek.benfek.toLowerCase().includes(value)
+    );
+    setFilteredData(filtered);
   };
 
   const columns = [
     { title: "Code", dataIndex: "code", key: "code" },
     { title: "Name", dataIndex: "benfek", key: "benfek" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_: any, record: any) => (
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item onClick={() => handleDelete(record.id)}>Delete</Menu.Item>
-            </Menu>
-          }
-        >
-          <Button
-            className="border-0 shadow-0 bg-transparent hover:bg-transparent"
-            icon={<MoreOutlined />}
-          />
-        </Dropdown>
-      ),
-    },
   ];
 
   return (
@@ -90,17 +57,18 @@ const BenfeksPage = () => {
         </button>
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <h1 className="text-2xl font-bold mb-6">Benfeks</h1>
-          <p className="text-gray-600 mb-4">Manage your Benfeks accounts below.</p>
+          <h1 className="text-2xl font-bold mb-6">Search Benfeks</h1>
+          <p className="text-gray-600 mb-4">Find a Benfek by name.</p>
+          <Input
+            placeholder="Search Benfeks..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="mb-4"
+          />
 
-          <Button type="primary" onClick={handleAddAccount}>
-            Add Benfek
-          </Button>
-
-          {/* Show Table on Large Screens and Collapse on Small Screens */}
           {isMobile ? (
             <Collapse accordion className="mt-6">
-              {benfeksData.map((benfek) => (
+              {filteredData.map((benfek) => (
                 <Panel key={benfek.id} header={benfek.benfek}>
                   <p>
                     <strong>Code:</strong> {benfek.code}
@@ -108,20 +76,14 @@ const BenfeksPage = () => {
                   <p>
                     <strong>Phone Number:</strong> {benfek.phone}
                   </p>
-                  <div className="flex justify-end mt-2">
-                    <Button danger onClick={() => handleDelete(benfek.id)}>
-                      Delete
-                    </Button>
-                  </div>
                 </Panel>
               ))}
             </Collapse>
           ) : (
-            <Table columns={columns} dataSource={benfeksData} pagination={false} className="mt-6" />
+            <Table columns={columns} dataSource={filteredData} pagination={false} className="mt-6" />
           )}
         </div>
       </div>
-
     </div>
   );
 };
