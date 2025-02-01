@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Phone, Home, Eye, EyeOff } from "lucide-react"; // Import eye icons
+import { User, Lock, Eye, EyeOff } from "lucide-react"; // Import eye icons
 import { endpoint } from "../service/actions";
 import { notification } from "antd";
 
 // Import Ant Design icons
-import { PhoneOutlined, HomeOutlined } from "@ant-design/icons";
+import { PhoneOutlined, HomeOutlined, BankFilled } from "@ant-design/icons";
 
 function Auth() {
   const [username, setUsername] = useState("");
@@ -13,6 +13,7 @@ function Auth() {
   const [pharmacyAddress, setPharmacyAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [accountNumber, setaccountNumber] = useState("");
   const [retypePassword, setRetypePassword] = useState(""); // New state for retype password
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
   const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility toggle
@@ -39,6 +40,7 @@ function Auth() {
           username,
           password,
           "principal",
+          accountNumber,
           pharmacyName,   // Send pharmacy name for registration
           pharmacyAddress, // Send pharmacy address for registration
           phone            // Send phone for registration
@@ -49,8 +51,11 @@ function Auth() {
         });
         setIsLogin(true);
       }
+      navigate("/dashboard");
     } catch (err: any) {
-      notification.error({ message: err.response.data.error || err.message || "An error occurred" });
+      notification.error({
+        message: err.response.data.error || err.message || "An error occurred",
+      });
       console.error("Error:", err.response.data.error);
     }
   };
@@ -66,12 +71,12 @@ function Auth() {
         <div className="text-center mb-8">
           {/* Add logo above the heading */}
           <img src={"logo"} alt="Logo" className="w-16 h-16 mx-auto mb-4" />
-          
+
           <h1 className="text-3xl font-bold text-gray-800">
             {isLogin ? "Welcome Back" : "Create an Account"}
           </h1>
           <p className="text-gray-600 mt-2">
-            {isLogin ? "Please sign in to continue" : "Register to get started"}
+            {isLogin ? "Please login to continue" : "Register to get started"}
           </p>
         </div>
 
@@ -117,6 +122,20 @@ function Auth() {
                   onChange={(e) => setPharmacyAddress(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Pharmacy Address"
+                  // required
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <BankFilled className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={accountNumber}
+                  onChange={(e) => setaccountNumber(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Account Number"
                   required
                 />
               </div>
@@ -154,36 +173,46 @@ function Auth() {
               className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
               onClick={() => setPasswordVisible(!passwordVisible)}
             >
-              {passwordVisible ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
+              {passwordVisible ? (
+                <EyeOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-400" />
+              )}
             </div>
           </div>
 
           {/* Retype Password field */}
-          {!isLogin && <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
+          {!isLogin && (
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type={retypePasswordVisible ? "text" : "password"}
+                value={retypePassword}
+                onChange={(e) => setRetypePassword(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Retype Password"
+                required
+              />
+              <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={() => setRetypePasswordVisible(!retypePasswordVisible)}
+              >
+                {retypePasswordVisible ? (
+                  <EyeOff className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400" />
+                )}
+              </div>
             </div>
-            <input
-              type={retypePasswordVisible ? "text" : "password"}
-              value={retypePassword}
-              onChange={(e) => setRetypePassword(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Retype Password"
-              required
-            />
-            <div
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => setRetypePasswordVisible(!retypePasswordVisible)}
-            >
-              {retypePasswordVisible ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
-            </div>
-          </div>}
+          )}
 
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
           >
-            {isLogin ? "Sign In" : "Register"}
+            {isLogin ? "login" : "Register"}
           </button>
         </form>
 
@@ -194,7 +223,7 @@ function Auth() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-blue-600 hover:text-blue-800 underline"
             >
-              {isLogin ? "Register" : "Sign In"}
+              {isLogin ? "Register" : "login"}
             </button>
           </p>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import {
   User,
@@ -20,7 +20,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 lg:p-8">
+    <div className="min-h-screen bg-gray-100 p-4 lg:p-8 sm:block flex items-center justify-center">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg">
         {/* Dashboard screen */}
         <section className="p-4 bg-blue-600 text-white rounded-t-xl">

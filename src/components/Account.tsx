@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -23,7 +23,7 @@ const Account = () => {
     setIsModalVisible(false);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values:any) => {
     console.log("New Transaction Details:", values);
     setIsModalVisible(false);
   };
@@ -85,7 +85,7 @@ const Account = () => {
     {
       title: "Reveal Detail",
       key: "details",
-      render: (_, record) => (
+      render: (_:any, record:any) => (
         <Collapse expandIconPosition="end" className="sm:text-sm md:text-base">
           <Panel header="Reveal Details" key={record.key}>
             <p>{record.details}</p>
@@ -106,7 +106,7 @@ const Account = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-7xl mx-auto">
         <button
           onClick={() => navigate("/dashboard")}

@@ -33,6 +33,7 @@ class Endpoint {
     password: string,
     role: string,
     name: string,
+    account_number: string,
     address: string,
     phone:string
 

@@ -6,11 +6,11 @@ function Podcasts() {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-7xl mx-auto">
         <button 
           onClick={() => navigate('/dashboard')}
-          className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          className="mb-6 flex items-center  gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Dashboard
