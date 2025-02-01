@@ -19,7 +19,6 @@ const { Panel } = Collapse;
 
 const BenfeksPage = () => {
   const navigate = useNavigate();
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [benfeksData, setBenfeksData] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -39,12 +38,9 @@ const BenfeksPage = () => {
   }, []);
 
   const handleAddAccount = () => {
-    setIsModalVisible(true);
+    navigate("/add-benfek");
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   const handleDelete = (id: any) => {
     Modal.confirm({
@@ -126,20 +122,6 @@ const BenfeksPage = () => {
         </div>
       </div>
 
-      {/* Modal for adding a new Benfek */}
-      <Modal title="Add New Benfek" open={isModalVisible} onCancel={handleCancel} footer={null}>
-        <Form form={form} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the Benfek name!" }]}>
-            <Input placeholder="Enter name" />
-          </Form.Item>
-          <div className="flex justify-end gap-2">
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-          </div>
-        </Form>
-      </Modal>
     </div>
   );
 };
