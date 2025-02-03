@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, apiBaseUrl } from "../service/apiService";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -33,9 +33,9 @@ function Dashboard() {
 
   useEffect(() => {
     // Get the auth token from localStorage
-    const authToken = localStorage.getItem("authToken");
+    const authToken = localStorage.getItem("authToken")??"";
     // Decode the token
-    const decoded = jwt_decode(authToken);
+    const decoded: { user_id: string } = jwtDecode(authToken);
 
     // Extract user ID from the decoded token
     const userId = decoded.user_id;

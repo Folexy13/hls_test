@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import {
-  Table,
-  Modal,
-  Button,
-  Form,
-  Input,
-  Select,
-  Collapse,
-  Radio,
-} from "antd";
+import { Table, Modal, Button, Form, Input, Select, Collapse, Radio } from "antd";
 
 const { Panel } = Collapse;
 
@@ -23,7 +14,7 @@ const Account = () => {
     setIsModalVisible(false);
   };
 
-  const handleSubmit = (values:any) => {
+  const handleSubmit = (values: any) => {
     console.log("New Transaction Details:", values);
     setIsModalVisible(false);
   };
@@ -63,11 +54,7 @@ const Account = () => {
   ];
 
   const transactionColumns = [
-    {
-      title: "Transaction Reference",
-      dataIndex: "reference",
-      key: "reference",
-    },
+    { title: "Transaction Reference", dataIndex: "reference", key: "reference" },
     { title: "Type", dataIndex: "type", key: "type" },
     { title: "Status", dataIndex: "status", key: "status" },
     { title: "Amount", dataIndex: "amount", key: "amount" },
@@ -85,8 +72,8 @@ const Account = () => {
     {
       title: "Reveal Detail",
       key: "details",
-      render: (_:any, record:any) => (
-        <Collapse expandIconPosition="end" className="sm:text-sm md:text-base">
+      render: (_: any, record: any) => (
+        <Collapse expandIconPosition="end">
           <Panel header="Reveal Details" key={record.key}>
             <p>{record.details}</p>
           </Panel>
@@ -106,7 +93,7 @@ const Account = () => {
   ];
 
   return (
-    <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-7xl mx-auto">
         <button
           onClick={() => navigate("/dashboard")}
@@ -118,50 +105,68 @@ const Account = () => {
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-sm md:text-2xl lg:text-3xl font-bold">
-                Account Transactions
-              </h1>
-            </div>
-            <div>
-              <p className="text-sm sm:text-lg font-semibold">
-                Account Balance: ₦50,000
-              </p>
-            </div>
+            <h1 className="text-sm md:text-2xl lg:text-3xl font-bold">
+              Account Transactions
+            </h1>
+            <p className="text-sm sm:text-lg font-semibold">
+              Account Balance: ₦50,000
+            </p>
           </div>
 
-          <Collapse
-            accordion
-            expandIconPosition="end"
-            className="sm:text-sm md:text-base"
-          >
-            <Panel header="Account History" key="1">
-              <Table
-                columns={transactionColumns}
-                dataSource={transactionData}
-                pagination={false}
-                className="w-full"
-                scroll={{ x: "100%" }}
-              />
-            </Panel>
-            <Panel header="New Payments" key="2">
-              <Table
-                columns={paymentColumns}
-                dataSource={paymentData}
-                pagination={false}
-                scroll={{ x: "100%" }}
-                className="w-full"
-              />
-            </Panel>
-          </Collapse>
-          <div className="flex my-2 flex-col md:flex-row  gap-2">
-            <Button type="default" className="bg-transaparent border-0"  htmlType="submit">
-              <p>Egazu Points: Free Trial (31days validity)</p>
+          {/* Accordion for Small Screens */}
+          <div className="block md:hidden">
+            <Collapse accordion expandIconPosition="end">
+              {transactionData.map((transaction) => (
+                <Panel header={transaction.reference} key={transaction.key}>
+                  <p><strong>Type:</strong> {transaction.type}</p>
+                  <p><strong>Status:</strong> {transaction.status}</p>
+                  <p><strong>Amount:</strong> {transaction.amount}</p>
+                  <p><strong>Date:</strong> {transaction.date}</p>
+                  <Button type="link">View Details</Button>
+                </Panel>
+              ))}
+            </Collapse>
+
+            <Collapse accordion expandIconPosition="end" className="mt-4">
+              {paymentData.map((payment) => (
+                <Panel header={payment.packName} key={payment.key}>
+                  <p><strong>Details:</strong> {payment.details}</p>
+                  <Radio.Group>
+                    <Radio value="yes">Yes</Radio>
+                    <Radio value="no">No</Radio>
+                  </Radio.Group>
+                </Panel>
+              ))}
+            </Collapse>
+          </div>
+
+          {/* Table for Larger Screens */}
+          <div className="hidden md:block">
+            <Table
+              columns={transactionColumns}
+              dataSource={transactionData}
+              pagination={false}
+              className="w-full"
+              scroll={{ x: "100%" }}
+            />
+            <Table
+              columns={paymentColumns}
+              dataSource={paymentData}
+              pagination={false}
+              scroll={{ x: "100%" }}
+              className="w-full mt-6"
+            />
+          </div>
+
+          <div className="flex my-2 flex-col md:flex-row gap-2">
+            <Button type="default" className="bg-transparent border-0">
+              <p>Egazu Points: Free Trial (31 days validity)</p>
             </Button>
           </div>
         </div>
       </div>
 
+      {/* Modal for Adding Transactions */}
       <Modal
         title="Add New Transaction"
         visible={isModalVisible}
@@ -173,12 +178,7 @@ const Account = () => {
           <Form.Item
             label="Transaction Reference"
             name="reference"
-            rules={[
-              {
-                required: true,
-                message: "Please input the transaction reference!",
-              },
-            ]}
+            rules={[{ required: true, message: "Please input the transaction reference!" }]}
           >
             <Input placeholder="Enter reference" />
           </Form.Item>
@@ -186,12 +186,7 @@ const Account = () => {
           <Form.Item
             label="Type"
             name="type"
-            rules={[
-              {
-                required: true,
-                message: "Please select the transaction type!",
-              },
-            ]}
+            rules={[{ required: true, message: "Please select the transaction type!" }]}
           >
             <Select placeholder="Select type">
               <Select.Option value="Withdrawal">Withdrawal</Select.Option>
@@ -202,12 +197,7 @@ const Account = () => {
           <Form.Item
             label="Status"
             name="status"
-            rules={[
-              {
-                required: true,
-                message: "Please select the transaction status!",
-              },
-            ]}
+            rules={[{ required: true, message: "Please select the transaction status!" }]}
           >
             <Select placeholder="Select status">
               <Select.Option value="Pending">Pending</Select.Option>
@@ -219,12 +209,7 @@ const Account = () => {
           <Form.Item
             label="Amount"
             name="amount"
-            rules={[
-              {
-                required: true,
-                message: "Please input the transaction amount!",
-              },
-            ]}
+            rules={[{ required: true, message: "Please input the transaction amount!" }]}
           >
             <Input placeholder="Enter amount" />
           </Form.Item>
@@ -232,9 +217,7 @@ const Account = () => {
           <Form.Item
             label="Date"
             name="date"
-            rules={[
-              { required: true, message: "Please input the transaction date!" },
-            ]}
+            rules={[{ required: true, message: "Please input the transaction date!" }]}
           >
             <Input placeholder="Enter date" />
           </Form.Item>
