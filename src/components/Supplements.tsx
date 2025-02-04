@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   DatePicker,
-  notification,
   Upload,
   Dropdown,
   Menu,
@@ -164,7 +163,8 @@ const Supplements = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item label="Image" name="image" valuePropName="fileList">
+          <Form.Item label="Image" name="image" valuePropName="fileList" 
+  getValueFromEvent={(e) => e?.fileList || []} >
             <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
