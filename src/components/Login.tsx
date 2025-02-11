@@ -47,7 +47,7 @@ function Auth() {
         try {
           const response = await axios.get(
             `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${selectedBank}`,
-            { headers: { Authorization: `Bearer pk_live_1f5680e39af5e720783e769cd1ed3826fa488c52` } }
+            { headers: { Authorization: `Bearer sk_test_accd9e759dcf29e72d8ed562fa0d972265e5861a` } }
           );
           setAccountName(response.data.data.account_name);
         } catch (error) {
