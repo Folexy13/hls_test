@@ -12,11 +12,18 @@ import Articles from './components/Articles';
 import Podcasts from './components/Podcasts';
 
 function App() {
+  const authToken = localStorage.getItem('authToken');
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
+        {/* If no authToken, always redirect to dashboard */}
+        <Route path="/" element={<Navigate to={authToken ? "/dashboard" : "/login"} />} />
+
+        {/* If logged in, prevent access to login page */}
+        <Route path="/login" element={authToken ? <Navigate to="/dashboard" /> : <Login />} />
+
+        {/* Protected Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account" element={<Account />} />
         <Route path="/earnings" element={<Earnings />} />
@@ -27,6 +34,9 @@ function App() {
         <Route path="/supplements" element={<Supplements />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/podcasts" element={<Podcasts />} />
+
+        {/* Catch-all route: If user visits an unknown route, redirect to dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>
   );

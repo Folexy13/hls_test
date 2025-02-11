@@ -45,6 +45,10 @@ function Dashboard() {
     };
     fetchPharmacyname();
   }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 lg:p-8 sm:block flex items-center justify-center">
@@ -57,10 +61,10 @@ function Dashboard() {
               <Menu className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             <div className="flex gap-3">
-              <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7" />
+              <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
               <Power
                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer"
-                onClick={() => navigate("/login")}
+                onClick={handleLogout}
               />
             </div>
           </div>

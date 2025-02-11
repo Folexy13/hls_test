@@ -62,7 +62,7 @@ function AddBenfek() {
               <Input placeholder="Enter family's condition" />
             </Form.Item>
 
-            <Form.Item label="Do you have any health condition?" name="have_health_condition" rules={[{ required: true, message: 'Please select an option' }]}> 
+            <Form.Item label="Do you have any current health condition?" name="have_health_condition" rules={[{ required: true, message: 'Please select an option' }]}> 
               <Radio.Group onChange={(e) => setHasHealthCondition(e.target.value === 'yes')}>
                 <Radio value="yes">Yes</Radio>
                 <Radio value="no">No</Radio>
