@@ -1,69 +1,60 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { Table, Button, Modal, Form, Input, InputNumber, notification } from 'antd';
+import { Table, Button, Collapse } from 'antd';
 
-// Sample data for the purchases
+const { Panel } = Collapse;
+
+// Sample data for purchases
 const initialPurchases = [
   {
     key: '1',
-    drugName: 'Paracetamol',
-    quantity: 100,
-    price: 1500,
-    purchaseDate: '2025-01-01',
+    receiptNumber: 'BNF-20250101',
+    date: '2025-01-01',
+    totalPurchase: 4500,
+    benfekName: 'Benfek A',
+    items: ['Item 1', 'Item 2', 'Item 3'],
   },
   {
     key: '2',
-    drugName: 'Aspirin',
-    quantity: 200,
-    price: 2000,
-    purchaseDate: '2025-01-10',
+    receiptNumber: 'BNF-20250110',
+    date: '2025-01-10',
+    totalPurchase: 6200,
+    benfekName: 'Benfek B',
+    items: ['Item 4', 'Item 5'],
   },
   {
     key: '3',
-    drugName: 'Amoxicillin',
-    quantity: 150,
-    price: 3000,
-    purchaseDate: '2025-01-12',
+    receiptNumber: 'BNF-20250112',
+    date: '2025-01-12',
+    totalPurchase: 8000,
+    benfekName: 'Benfek C',
+    items: ['Item 6', 'Item 7', 'Item 8', 'Item 9'],
   },
 ];
 
 const Purchases = () => {
   const navigate = useNavigate();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [purchases, setPurchases] = useState(initialPurchases);
+  const [purchases] = useState(initialPurchases);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-  const handleAddPurchase = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleSubmit = (values:any) => {
-    const newPurchase = {
-      key: purchases.length + 1,
-      drugName: values.drugName,
-      quantity: values.quantity,
-      price: values.price,
-      purchaseDate: values.purchaseDate,
-    };
-
-    setPurchases([...purchases, newPurchase]);
-
-    notification.success({ message: 'Purchase added successfully!' });
-
-    form.resetFields();
-    setIsModalVisible(false);
+  const toggleDetails = (key: string) => {
+    setExpandedRow(expandedRow === key ? null : key);
   };
 
   const columns = [
-    { title: 'Drug Name', dataIndex: 'drugName', key: 'drugName' },
-    { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
-    { title: 'Price (₦)', dataIndex: 'price', key: 'price' },
-    { title: 'Purchase Date', dataIndex: 'purchaseDate', key: 'purchaseDate' },
+    { title: 'Receipt Number', dataIndex: 'receiptNumber', key: 'receiptNumber' },
+    { title: 'Date', dataIndex: 'date', key: 'date' },
+    { title: 'Total Purchase (₦)', dataIndex: 'totalPurchase', key: 'totalPurchase' },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_: any, record: any) => (
+        <Button type="link" onClick={() => toggleDetails(record.key)}>
+          {expandedRow === record.key ? 'Hide Details' : 'Explicit Detail'}
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -79,71 +70,42 @@ const Purchases = () => {
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <h1 className="text-2xl font-bold mb-6">Purchases</h1>
-          <p className="text-gray-600 mb-4">Manage pharmacy purchases below.</p>
+          <p className="text-gray-600 mb-4">View your Benfek receipts below.</p>
 
-          <Button type="primary" onClick={handleAddPurchase}>
-            Add Purchase
-          </Button>
+          {/* Table for larger screens */}
+          <div className="hidden md:block">
+            <Table
+              columns={columns}
+              dataSource={purchases}
+              pagination={false}
+              className="mt-6"
+            />
+          </div>
 
-          <Table
-            columns={columns}
-            dataSource={purchases}
-            pagination={false}
-            className="mt-6"
-            scroll={{ x: 800 }} // Enables horizontal scrolling
-          />
+          {/* Accordion for smaller screens */}
+          <div className="block md:hidden">
+            <Collapse accordion>
+              {purchases.map((purchase) => (
+                <Panel
+                  header={`${purchase.receiptNumber} - ₦${purchase.totalPurchase}`}
+                  key={purchase.key}
+                >
+                  <p><strong>Date:</strong> {purchase.date}</p>
+                  <Button type="link" onClick={() => toggleDetails(purchase.key)}>
+                    {expandedRow === purchase.key ? 'Hide Details' : 'Explicit Detail'}
+                  </Button>
+                  {expandedRow === purchase.key && (
+                    <div className="mt-2">
+                      <p><strong>Benfek Name:</strong> {purchase.benfekName}</p>
+                      <p><strong>Items:</strong> {purchase.items.join(', ')}</p>
+                    </div>
+                  )}
+                </Panel>
+              ))}
+            </Collapse>
+          </div>
         </div>
       </div>
-
-      {/* Modal for adding new purchase */}
-      <Modal
-        title="Add New Purchase"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        destroyOnClose
-      >
-        <Form form={form} onFinish={handleSubmit}>
-          <Form.Item
-            label="Drug Name"
-            name="drugName"
-            rules={[{ required: true, message: 'Please input the drug name!' }]}
-          >
-            <Input placeholder="Enter drug name" />
-          </Form.Item>
-
-          <Form.Item
-            label="Quantity"
-            name="quantity"
-            rules={[{ required: true, message: 'Please input the quantity!' }]}
-          >
-            <InputNumber placeholder="Enter quantity" min={1} />
-          </Form.Item>
-
-          <Form.Item
-            label="Price (₦)"
-            name="price"
-            rules={[{ required: true, message: 'Please input the price!' }]}
-          >
-            <InputNumber placeholder="Enter price" min={1} />
-          </Form.Item>
-
-          <Form.Item
-            label="Purchase Date"
-            name="purchaseDate"
-            rules={[{ required: true, message: 'Please select the purchase date!' }]}
-          >
-            <Input placeholder="Enter purchase date" />
-          </Form.Item>
-
-          <div className="flex justify-end gap-2">
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              Add Purchase
-            </Button>
-          </div>
-        </Form>
-      </Modal>
     </div>
   );
 };

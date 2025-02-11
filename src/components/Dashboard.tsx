@@ -34,7 +34,8 @@ function Dashboard() {
   useEffect(() => {
     // Get the auth token from localStorage
     const authToken = localStorage.getItem("authToken")??"";
-    // Decode the token
+    if (authToken){
+      // Decode the token
     const decoded: { user_id: string } = jwtDecode(authToken);
 
     // Extract user ID from the decoded token
@@ -44,6 +45,7 @@ function Dashboard() {
       setPharmacy(resp.data.name);
     };
     fetchPharmacyname();
+    }
   }, []);
   const handleLogout = () => {
     localStorage.removeItem("authToken");
