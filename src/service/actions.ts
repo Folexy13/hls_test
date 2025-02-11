@@ -34,6 +34,7 @@ class Endpoint {
     role: string,
     name: string,
     account_number: string,
+    bank_name: string,
     address: string,
     phone:string
 
@@ -46,6 +47,8 @@ class Endpoint {
           password,
           role,
           name,
+          account_number,
+          bank_name,
           phone,
           address,
         }

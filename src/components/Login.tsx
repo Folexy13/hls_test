@@ -80,6 +80,7 @@ function Auth() {
           "principal",
           pharmacyName, // Send pharmacy name for registration
           accountNumber,
+          selectedBank,
           pharmacyAddress, // Send pharmacy address for registration
           phone // Send phone for registration
         );
