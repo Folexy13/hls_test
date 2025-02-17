@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { Table, Button } from 'antd';
-
+import {Table, Button, Collapse} from 'antd';
+const { Panel } = Collapse;
 const Earnings = () => {
   const navigate = useNavigate();
   
@@ -34,6 +34,10 @@ const Earnings = () => {
     // Add more earnings records here
   ]);
 
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const toggleDetails = (key: string) => {
+    setExpandedRow(expandedRow === key ? null : key);
+  };
 
   const columns = [
     { title: 'Receipt Number', dataIndex: 'receiptNumber', key: 'receiptNumber' },
@@ -77,7 +81,7 @@ const Earnings = () => {
           </Button>
 
           {/* Earnings Table */}
-          <div className="overflow-x-auto">
+          <div className="hidden md:block">
             <Table
               columns={columns}
               dataSource={earningsData}
@@ -85,6 +89,28 @@ const Earnings = () => {
               scroll={{ x: 800 }} // This enables horizontal scrolling
               className="w-full"
             />
+          </div>
+          {/* Accordion for smaller screens */}
+          <div className="block md:hidden">
+            <Collapse accordion>
+              {earningsData.map((earnings:any) => (
+                  <Panel
+                      header={`${earnings.receiptNumber} - ₦${earnings.totalPurchase}`}
+                      key={earnings.key}
+                  >
+                    <p><strong>Date:</strong> {earnings.date}</p>
+                    <Button type="link" onClick={() => toggleDetails(earnings.key)}>
+                      {expandedRow === earnings.key ? 'Hide Details' : 'Explicit Detail'}
+                    </Button>
+                    {expandedRow === earnings.key && (
+                        <div className="mt-2">
+                          <p><strong>Benfek Name:</strong> {earnings.benfekName}</p>
+                          <p><strong>Items:</strong> {earnings.items.join(', ')}</p>
+                        </div>
+                    )}
+                  </Panel>
+              ))}
+            </Collapse>
           </div>
         </div>
       </div>
