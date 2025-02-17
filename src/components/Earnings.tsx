@@ -9,37 +9,45 @@ const Earnings = () => {
   const [earningsData] = useState([
     {
       key: '1',
-      reference: 'TXN12345',
-      amount: '₦5,000',
-      type: 'Commission',
-      date: '2025-01-23',
-      status: 'Paid',
+      receiptNumber: 'BNF-20250101',
+      date: '2025-01-01',
+      totalPurchase: 4500,
+      benfekName: 'Benfek A',
+      items: ['Item 1', 'Item 2', 'Item 3'],
     },
     {
       key: '2',
-      reference: 'TXN12346',
-      amount: '₦3,500',
-      type: 'Referral Bonus',
-      date: '2025-01-22',
-      status: 'Pending',
+      receiptNumber: 'BNF-20250110',
+      date: '2025-01-10',
+      totalPurchase: 6200,
+      benfekName: 'Benfek B',
+      items: ['Item 4', 'Item 5'],
     },
     {
       key: '3',
-      reference: 'TXN12347',
-      amount: '₦2,000',
-      type: 'Sale Earnings',
-      date: '2025-01-21',
-      status: 'Paid',
+      receiptNumber: 'BNF-20250112',
+      date: '2025-01-12',
+      totalPurchase: 8000,
+      benfekName: 'Benfek C',
+      items: ['Item 6', 'Item 7', 'Item 8', 'Item 9'],
     },
     // Add more earnings records here
   ]);
 
+
   const columns = [
-    { title: 'Transaction Reference', dataIndex: 'reference', key: 'reference' },
-    { title: 'Amount', dataIndex: 'amount', key: 'amount' },
-    { title: 'Type', dataIndex: 'type', key: 'type' },
+    { title: 'Receipt Number', dataIndex: 'receiptNumber', key: 'receiptNumber' },
     { title: 'Date', dataIndex: 'date', key: 'date' },
-    { title: 'Status', dataIndex: 'status', key: 'status' },
+    { title: 'Total Purchase (₦)', dataIndex: 'totalPurchase', key: 'totalPurchase' },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_: any, record: any) => (
+          <Button type="link" onClick={() => toggleDetails(record.key)}>
+            {expandedRow === record.key ? 'Hide Details' : 'Explicit Detail'}
+          </Button>
+      ),
+    },
   ];
 
   return (
