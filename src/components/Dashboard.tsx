@@ -54,7 +54,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 lg:p-8 sm:block flex items-center justify-center">
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg">
+      <div className="md:max-w-7xl w-11/12 mx-auto bg-white rounded-xl shadow-lg">
         {/* Dashboard screen */}
         <section className="p-4 bg-blue-600 text-white rounded-t-xl">
           <div className="flex justify-between items-center mb-6">

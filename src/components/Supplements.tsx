@@ -25,7 +25,26 @@ const Supplements = () => {
   const [editingSupplement, setEditingSupplement] = useState<any>(null);
   const [form] = Form.useForm();
   const [supplements, setSupplements] = useState<any[]>([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [_, setIsMobile] = useState(window.innerWidth < 768);
+  const handleEdit = (record: any) => {
+    setEditingSupplement(record);
+    form.setFieldsValue({
+      name: record.name,
+      price: record.price,
+      expiry: dayjs(record.expiry),
+      image: record.image ? [{ url: record.image }] : [],
+    });
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await api.delete(`${apiBaseUrl}/supplements/${id}`);
+      setSupplements((prev) => prev.filter((supplement) => supplement.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const fetchSupplements = async () => {
@@ -94,7 +113,7 @@ const Supplements = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 flex justify-center">
-      <div className="max-w-7xl w-full">
+      <div className="md:max-w-7xl w-11/12 mx-auto">
         <button
           onClick={() => navigate("/dashboard")}
           className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900"

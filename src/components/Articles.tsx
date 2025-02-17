@@ -7,7 +7,7 @@ function Articles() {
   
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="md:max-w-7xl w-11/12 mx-auto">
         <button 
           onClick={() => navigate('/dashboard')}
           className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900"
