@@ -43,7 +43,7 @@ function Dashboard() {
     // Extract user ID from the decoded token
     const userId = decoded.user_id;
     const fetchPharmacyname = async () => {
-      const resp = await api.get(apiBaseUrl + "/customers/id/" + userId + "/");
+      const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/");
       setPharmacy(resp.data.name);
     };
     fetchPharmacyname();
