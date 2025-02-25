@@ -81,6 +81,7 @@ function Auth() {
                     "principal",
                     pharmacyName, // Send pharmacy name for registration
                     accountNumber,
+                    accountName,
                     selectedBank,
                     pharmacyAddress, // Send pharmacy address for registration
                     phone // Send phone for registration
@@ -193,15 +194,12 @@ function Auth() {
                                 />
                             </div>
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <BankFilled className="h-5 w-5 text-gray-400"/>
-                                </div>
                                 <input
                                     type="text"
                                     value={accountName}
                                     readOnly
                                     className="block w-full p-2 border border-gray-300 rounded-lg bg-gray-100"
-                                    placeholder="Account Name"
+                                    placeholder="Account Name( it would automatically be filled)"
                                 />
                             </div>
 

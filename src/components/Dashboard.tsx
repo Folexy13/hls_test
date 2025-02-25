@@ -24,12 +24,12 @@ function Dashboard() {
   const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [pharmacy, setPharmacy] = useState("");
-
+  const fetchWalletbalance = async () => {
+    const resp = await api.get(apiBaseUrl + "/wallet/balance");
+    setBalance(resp.data.balance);
+  };
   useEffect(() => {
-    const fetchWalletbalance = async () => {
-      const resp = await api.get(apiBaseUrl + "/wallet/balance");
-      setBalance(resp.data.balance);
-    };
+
     fetchWalletbalance();
   }, []);
 
@@ -45,10 +45,8 @@ function Dashboard() {
     // Extract user ID from the decoded token
     const userId = decoded.user_id;
     const fetchPharmacyname = async () => {
-      const x = await api.get(apiBaseUrl + "/customers/")
-      console.log(x)
       const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/");
-      setPharmacy(resp.data.name);
+      setPharmacy(resp.data.name.toUpperCase());
     };
     fetchPharmacyname();
     }
@@ -82,8 +80,8 @@ function Dashboard() {
               {/* User icon dropdown */}
               <Dropdown overlay={menu} trigger={['click']}>
                 <div className="flex items-center cursor-pointer">
-                  <User className="w-6 h-6 sm:w-7 sm:h-7" />
-                  <DownOutlined className="ml-1 w-4 h-4" /> {/* Down arrow to indicate dropdown */}
+                  <User className="w-3 h-3 sm:w-7 sm:h-7" />
+                  <DownOutlined className="ml-1 w-3 h-3" /> {/* Down arrow to indicate dropdown */}
                 </div>
               </Dropdown>
             </div>
@@ -97,10 +95,10 @@ function Dashboard() {
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl flex items-center justify-center gap-2 font-bold mb-1">
              <span> {balance.toPrecision(3)}</span>
-              <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
+              <RefreshCcw onClick={fetchWalletbalance} className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
               <span></span>
             </h1>
-            <p className="text-blue-100 text-sm">{pharmacy}</p>
+            <p className="text-blue-100 text-lg font-extrabold">{`${pharmacy}'S PHARMACY`}</p>
           </div>
         </section>
 

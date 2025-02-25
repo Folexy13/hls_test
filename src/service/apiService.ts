@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// export const apiBaseUrl = "http://localhost:8000/api"//"https://www.hls.com.ng/api";
 export const apiBaseUrl = "https://www.hls.com.ng/api";
 
 // Create an Axios instance
