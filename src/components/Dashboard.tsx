@@ -52,7 +52,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    navigate("/login");
+    window.location.href = "/login";
   }
 
   // Menu for dropdown options

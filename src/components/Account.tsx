@@ -97,7 +97,7 @@ const Account = () => {
       <div className="md:max-w-7xl w-11/12 mx-auto">
         <button
             onClick={() => navigate('/dashboard')}
-            className="mb-6 flex items-center gap-2 bg-green-400 px-6 py-1 text-gray-600 hover:text-gray-900"
+            className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Dashboard
