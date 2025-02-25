@@ -16,6 +16,8 @@ import {
 import { useEffect, useState } from "react";
 import { api, apiBaseUrl } from "../service/apiService";
 import { jwtDecode } from "jwt-decode";
+import { Dropdown, Menu } from "antd"; // Import Dropdown and Menu components
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -46,10 +48,24 @@ function Dashboard() {
     fetchPharmacyname();
     }
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
   }
+
+  // Menu for dropdown options
+  const menu = (
+      <Menu>
+        <Menu.Item key="profile" onClick={() => navigate("/profile")}>
+          Edit Profile
+        </Menu.Item>
+        <Menu.Item key="logout" onClick={handleLogout}>
+          Logout
+        </Menu.Item>
+      </Menu>
+  );
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 lg:p-8 sm:block flex items-center justify-center">
@@ -58,7 +74,10 @@ function Dashboard() {
         <section className="p-4 bg-blue-600 text-white rounded-t-xl">
           <div className="flex justify-between items-center mb-6">
             <div className="flex gap-3">
-              <User className="w-6 h-6 sm:w-7 sm:h-7" />
+              {/* User icon dropdown */}
+              <Dropdown overlay={menu} trigger={['click']}>
+                <User className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" />
+              </Dropdown>
             </div>
             <div className="flex gap-3">
               <Power
