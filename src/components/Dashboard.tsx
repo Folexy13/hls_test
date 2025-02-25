@@ -27,7 +27,7 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchWalletbalance = async () => {
-      const resp = await api.get(apiBaseUrl + "/wallet/balance/");
+      const resp = await api.get(apiBaseUrl + "/wallet/balance");
       setBalance(resp.data.balance);
     };
     fetchWalletbalance();
