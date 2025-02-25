@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { api, apiBaseUrl } from "../service/apiService";
 import { jwtDecode } from "jwt-decode";
 import { Dropdown, Menu } from "antd"; // Import Dropdown and Menu components
+import { DownOutlined } from "@ant-design/icons"; // Import DownOutlined icon for dropdown indicator
 
 
 function Dashboard() {
@@ -76,7 +77,10 @@ function Dashboard() {
             <div className="flex gap-3">
               {/* User icon dropdown */}
               <Dropdown overlay={menu} trigger={['click']}>
-                <User className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" />
+                <div className="flex items-center cursor-pointer">
+                  <User className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <DownOutlined className="ml-1 w-4 h-4" /> {/* Down arrow to indicate dropdown */}
+                </div>
               </Dropdown>
             </div>
             <div className="flex gap-3">
