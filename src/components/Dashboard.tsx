@@ -39,13 +39,14 @@ function Dashboard() {
     if (authToken){
       // Decode the token
     const decoded: { user_id: string } = jwtDecode(authToken);
-  const x = await api.get(apiBaseUrl + "/customers/")
-      console.log(x)
+
 
 
     // Extract user ID from the decoded token
     const userId = decoded.user_id;
     const fetchPharmacyname = async () => {
+      const x = await api.get(apiBaseUrl + "/customers/")
+      console.log(x)
       const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/");
       setPharmacy(resp.data.name);
     };
