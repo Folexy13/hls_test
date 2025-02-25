@@ -68,7 +68,7 @@ function Dashboard() {
             </div>
           </div>
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl flex items-center gap-2 font-bold mb-1">
+            <h1 className="text-2xl sm:text-3xl flex items-center justify-center gap-2 font-bold mb-1">
              <span> {balance.toPrecision(3)}</span>
               <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
               <span></span>
