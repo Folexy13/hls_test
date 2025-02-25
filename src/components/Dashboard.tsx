@@ -40,6 +40,8 @@ function Dashboard() {
       // Decode the token
     const decoded: { user_id: string } = jwtDecode(authToken);
 
+    console.log(decoded);
+
     // Extract user ID from the decoded token
     const userId = decoded.user_id;
     const fetchPharmacyname = async () => {
