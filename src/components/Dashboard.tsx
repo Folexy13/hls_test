@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
   User,
-  Menu,
   RefreshCcw,
   Power,
   History,
@@ -60,10 +59,8 @@ function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <div className="flex gap-3">
               <User className="w-6 h-6 sm:w-7 sm:h-7" />
-              <Menu className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             <div className="flex gap-3">
-              <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
               <Power
                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer"
                 onClick={handleLogout}
@@ -71,8 +68,10 @@ function Dashboard() {
             </div>
           </div>
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1">
-              {balance.toPrecision(3)}
+            <h1 className="text-2xl sm:text-3xl flex items-center gap-2 font-bold mb-1">
+             <span> {balance.toPrecision(3)}</span>
+              <RefreshCcw className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer" xlinkTitle="refresh dashboard" />
+              <span></span>
             </h1>
             <p className="text-blue-100 text-sm">{pharmacy}</p>
           </div>

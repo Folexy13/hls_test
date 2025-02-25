@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -25,7 +25,7 @@ const Supplements = () => {
   const [editingSupplement, setEditingSupplement] = useState<any>(null);
   const [form] = Form.useForm();
   const [supplements, setSupplements] = useState<any[]>([]);
-  const [_, setIsMobile] = useState(window.innerWidth < 768);
+  const [, setIsMobile] = useState(window.innerWidth < 768);
   const handleEdit = (record: any) => {
     setEditingSupplement(record);
     form.setFieldsValue({
@@ -45,6 +45,16 @@ const Supplements = () => {
       console.log(error);
     }
   };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      await api.post(`${apiBaseUrl}/supplements/`, values);
+      setSupplements(prevSupplements => [...prevSupplements, values]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
 
   useEffect(() => {
     const fetchSupplements = async () => {
@@ -115,8 +125,8 @@ const Supplements = () => {
     <div className="min-h-screen bg-gray-100 p-4 flex justify-center">
       <div className="md:max-w-7xl w-11/12 mx-auto">
         <button
-          onClick={() => navigate("/dashboard")}
-          className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            onClick={() => navigate('/dashboard')}
+            className="mb-6 flex items-center gap-2 bg-green-400 px-6 py-1 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Dashboard
@@ -164,12 +174,12 @@ const Supplements = () => {
       {/* Modal for adding/editing */}
       <Modal
         title={editingSupplement ? "Edit Supplement" : "Add New Supplement"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         destroyOnClose
       >
-        <Form form={form} onFinish={() => {}} layout="vertical">
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Enter name!" }]}>
             <Input placeholder="Enter name" />
           </Form.Item>
