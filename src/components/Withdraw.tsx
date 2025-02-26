@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ArrowLeft} from 'lucide-react';
-import {Button, Table, Input, Modal, notification} from 'antd';
+import {Button, Table, Input, Modal, notification, Form, message} from 'antd';
 import {jwtDecode} from "jwt-decode";
 import {api, apiBaseUrl} from "../service/apiService.ts";
 
@@ -10,10 +10,17 @@ const Withdraw = () => {
     const [transactions, setTransactions] = useState<any[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [transactionType, setTransactionType] = useState<'deposit' | 'withdraw'>('deposit');
-    const [amount, setAmount] = useState<number>(0);
     const [myWallet, setMyWallet] = useState<{ balance: number }>({balance: 0});
     const [walletBalance, setWalletBalance] = useState(myWallet.balance ?? 0); // Initial wallet balance
-
+    const [withDrawalCount, setWithDrawalCount] = useState<number | null>(null);
+    const [form] = Form.useForm(); // Use Form hook to manage form state
+    useEffect(() => {
+        const fetchWIthdrawalCount = async () => {
+            const resp = await api.get(`${apiBaseUrl}/wallet/withdrawals/count/`)
+            setWithDrawalCount(resp.data.withdrawals_count);
+        }
+        fetchWIthdrawalCount()
+    }, []);
 
     const handleModalOpen = (type: 'deposit' | 'withdraw') => {
         setTransactionType(type);
@@ -33,7 +40,8 @@ const Withdraw = () => {
 
         fetchWallet();
     }, []);
-    const handleTransaction = () => {
+    const handleTransaction = async (amount: any) => {
+
         if (amount <= 0) {
             notification.error({message: 'Amount must be greater than zero'});
             return;
@@ -52,16 +60,20 @@ const Withdraw = () => {
             status: 'Completed',
         };
 
+
         setTransactions([...transactions, newTransaction]);
 
         // Update wallet balance based on transaction type
         if (transactionType === 'deposit') {
             setWalletBalance(walletBalance + amount);
         } else if (transactionType === 'withdraw') {
+
+            await api.post(`${apiBaseUrl}/wallets/withdraw_funds`, {amount})
+
+            message.success("Operation Successful")
             setWalletBalance(walletBalance - amount);
         }
 
-        setAmount(0);
         setIsModalVisible(false);
         notification.success({message: `${transactionType === 'deposit' ? 'Deposit' : 'Withdrawal'} successful!`});
     };
@@ -85,7 +97,10 @@ const Withdraw = () => {
                 </button>
 
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                    <h1 className="text-2xl font-bold mb-6">Withdraw</h1>
+                    <h1 className="text-2xl font-bold mb-6 flex items-center justify-between">
+                        <span>Withdraw</span>
+                        <span className={"text-xs"}> {withDrawalCount} / 2 withdrawals left</span>
+                    </h1>
                     <p className="text-gray-600 mb-6">Manage your wallet transactions here.</p>
 
                     <div className="mb-6 p-4 border rounded-lg bg-gray-50">
@@ -94,7 +109,8 @@ const Withdraw = () => {
                     </div>
 
 
-                    <Button type="primary" danger onClick={() => handleModalOpen('withdraw')}>
+                    <Button type="primary" disabled={withDrawalCount == null || withDrawalCount <=100} danger
+                            onClick={() => handleModalOpen('withdraw')}>
                         Withdraw Funds
                     </Button>
 
@@ -115,18 +131,26 @@ const Withdraw = () => {
                 title={`${transactionType === 'deposit' ? 'Add Funds to' : 'Withdraw from'} Wallet`}
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                onOk={handleTransaction}
+                onOk={() => handleTransaction(form.getFieldValue("amount"))}
                 okText={transactionType === 'deposit' ? 'Add Funds' : 'Withdraw'}
             >
-                <div className="flex flex-col space-y-4">
-                    <Input
-                        type="number"
-                        placeholder={`Enter amount to ${transactionType === 'deposit' ? 'deposit' : 'withdraw'}`}
-                        value={amount}
-                        onChange={(e) => setAmount(parseFloat(e.target.value))}
-                        min={1}
-                    />
-                </div>
+                <Form form={form} className="flex flex-col space-y-4">
+                    <Form.Item
+                        name="amount"
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please enter the amount to ${transactionType === 'deposit' ? 'deposit' : 'withdraw'}`,
+                            },
+                        ]}
+                    >
+                        <Input
+                            type="number"
+                            placeholder={`Enter amount to ${transactionType === 'deposit' ? 'deposit' : 'withdraw'}`}
+                            min={1}
+                        />
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     );
