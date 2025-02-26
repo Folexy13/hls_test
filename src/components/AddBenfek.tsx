@@ -62,7 +62,7 @@ function AddBenfek() {
               <Input placeholder="Enter family's condition" />
             </Form.Item>
             <Form.Item label="Current medication in use" name="current_medication" >
-              <Input placeholder="Enter issues (seperate values by commas)" />
+              <Input placeholder="Enter medications (seperate values by commas)" />
             </Form.Item>
 
             <Form.Item label="Do you have any current health condition?" name="have_health_condition" rules={[{ required: true, message: 'Please select an option' }]}> 
