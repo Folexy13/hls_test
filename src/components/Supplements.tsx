@@ -11,7 +11,7 @@ import {
   Upload,
   Dropdown,
   Menu,
-  Collapse,
+  Collapse, message,
 } from "antd";
 import { UploadOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -50,6 +50,7 @@ const Supplements = () => {
     try {
       await api.post(`${apiBaseUrl}/supplements/`, values);
       setSupplements(prevSupplements => [...prevSupplements, values]);
+      message.success("supplement added successfully")
     } catch (e) {
       console.log(e);
     }
