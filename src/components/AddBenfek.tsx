@@ -61,6 +61,9 @@ function AddBenfek() {
             <Form.Item label="What is your family's notable health condition?" name="family_condition" > 
               <Input placeholder="Enter family's condition" />
             </Form.Item>
+            <Form.Item label="Current medication in use" name="current_medication" >
+              <Input placeholder="Enter issues (seperate values by commas)" />
+            </Form.Item>
 
             <Form.Item label="Do you have any current health condition?" name="have_health_condition" rules={[{ required: true, message: 'Please select an option' }]}> 
               <Radio.Group onChange={(e) => setHasHealthCondition(e.target.value === 'yes')}>
