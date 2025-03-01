@@ -68,9 +68,6 @@ function Dashboard() {
             <Menu.Item key="profile" onClick={() => navigate("/")}>
                 Edit Profile
             </Menu.Item>
-            <Menu.Item key="logout" onClick={handleLogout}>
-                Logout
-            </Menu.Item>
         </Menu>
     );
 
