@@ -17,13 +17,15 @@ import {useEffect, useState} from "react";
 import {api, apiBaseUrl} from "../service/apiService";
 import {jwtDecode} from "jwt-decode";
 import {Dropdown, Menu, message} from "antd"; // Import Dropdown and Menu components
-import {DownOutlined} from "@ant-design/icons"; // Import DownOutlined icon for dropdown indicator
+import {DownOutlined} from "@ant-design/icons";
+import ProfileModal from "./profileModal.tsx"; // Import DownOutlined icon for dropdown indicator
 
 
 function Dashboard() {
     const navigate = useNavigate();
     const [pharmacy, setPharmacy] = useState("");
     const [myWallet, setMyWallet] = useState<{ balance: number }>({balance: 0});
+    const [showModal,setShowModal] = useState(false);
     const fetchWallet = async () => {
         // Get the auth token from localStorage
         const authToken = localStorage.getItem("authToken") ?? "";
@@ -65,7 +67,7 @@ function Dashboard() {
     // Menu for dropdown options
     const menu = (
         <Menu>
-            <Menu.Item key="profile" onClick={() => navigate("/")}>
+            <Menu.Item key="profile" onClick={() => setShowModal(true)}>
                 Edit Profile
             </Menu.Item>
         </Menu>
@@ -175,6 +177,7 @@ function Dashboard() {
                     </div>
                 </section>
             </div>
+            <ProfileModal isOpen={showModal} onClose={()=>setShowModal(false)} />
         </div>
     );
 }

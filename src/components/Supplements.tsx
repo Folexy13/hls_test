@@ -11,7 +11,7 @@ import {
   Upload,
   Dropdown,
   Menu,
-  Collapse, message,
+  Collapse, message, UploadFile,
 } from "antd";
 import { UploadOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -25,6 +25,7 @@ const Supplements = () => {
   const [editingSupplement, setEditingSupplement] = useState<any>(null);
   const [form] = Form.useForm();
   const [supplements, setSupplements] = useState<any[]>([]);
+  const [fileList, setFileList] = useState<any>([]);
   const [, setIsMobile] = useState(window.innerWidth < 768);
   const handleEdit = (record: any) => {
     setEditingSupplement(record);
@@ -47,15 +48,38 @@ const Supplements = () => {
   };
 
   const handleSubmit = async (values: any) => {
-    try {
-      await api.post(`${apiBaseUrl}/supplements/`, values);
-      setSupplements(prevSupplements => [...prevSupplements, values]);
-      message.success("supplement added successfully")
-    } catch (e) {
-      console.log(e);
-    }
-  }
+    const formData = new FormData();
+    console.log(fileList);
 
+    formData.append("name", values.name);
+    formData.append("price", values.price);
+    formData.append("expiry", values.expiry.toISOString());
+
+    // Ensure the image file is appended correctly
+    if (fileList.length > 0) {
+      const imageFile = fileList[0].originFileObj;
+      formData.append("image", imageFile);
+    }
+
+    try {
+      const response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setSupplements((prev) => [...prev, response.data]);
+      message.success("Supplement added successfully");
+      setIsModalVisible(false);
+      form.resetFields();
+      setFileList([]); // Clear uploaded file
+    } catch (e) {
+      message.error("Failed to add supplement");
+    }
+  };
+
+  const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
+    setFileList(fileList);
+  };
 
   useEffect(() => {
     const fetchSupplements = async () => {
@@ -127,7 +151,7 @@ const Supplements = () => {
       <div className="md:max-w-7xl w-11/12 mx-auto">
         <button
             onClick={() => navigate('/dashboard')}
-            className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1 text-gray-600 hover:text-gray-900"
+            className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1   hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Dashboard
@@ -193,9 +217,16 @@ const Supplements = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item label="Image" name="image" valuePropName="fileList" 
-  getValueFromEvent={(e) => e?.fileList || []} >
-            <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
+
+          {/* File Upload */}
+          <Form.Item label="Image" name="image">
+            <Upload
+                listType="picture"
+                maxCount={1}
+                beforeUpload={() => false} // Prevent auto-upload
+                fileList={fileList}
+                onChange={handleFileChange}
+            >
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>
