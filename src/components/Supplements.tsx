@@ -175,20 +175,34 @@ const Supplements = () => {
                                     header={
                                         <div className="flex items-center justify-between">
                                             <span className="font-semibold">{supplement.name}</span>
-                                            <span
-                                                className="text-gray-500">{dayjs(supplement.expiry).format("MMM D, YYYY")}</span>
+                                            <span className="text-gray-500">
+                            {dayjs(supplement.expiry).format("MMM D, YYYY")}
+                        </span>
                                         </div>
                                     }
                                     key={supplement.id}
                                 >
                                     <div className="flex flex-col gap-2">
-                                        <img src={supplement.image} alt={supplement.name}
-                                             className="w-full h-40 object-cover rounded-lg"/>
-                                        <p><strong>Price:</strong> ₦{supplement.price.toLocaleString()}</p>
-                                        <div className="flex justify-between">
-                                            <Button size="small" onClick={() => handleEdit(supplement)}>Edit</Button>
-                                            <Button size="small" danger
-                                                    onClick={() => handleDelete(supplement.id)}>Delete</Button>
+                                        {/* Flex container for image and price */}
+                                        <div className="flex  gap-4">
+                                            <img
+                                                src={supplement.image}
+                                                alt={supplement.name}
+                                                className="w-12 h-12 object-cover rounded-lg" // Smaller image size
+                                            />
+                                            <p className="m-0">
+                                                <strong>Price:</strong> ₦{supplement.price.toLocaleString()}
+                                            </p>
+                                        </div>
+
+                                        {/* Edit and Delete buttons */}
+                                        <div className="flex justify-between mt-2">
+                                            <Button size="small" onClick={() => handleEdit(supplement)}>
+                                                Edit
+                                            </Button>
+                                            <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
+                                                Delete
+                                            </Button>
                                         </div>
                                     </div>
                                 </Panel>
@@ -229,6 +243,7 @@ const Supplements = () => {
                             beforeUpload={() => false} // Prevent auto-upload
                             fileList={fileList}
                             onChange={handleFileChange}
+                            accept="image/*"
                         >
                             <Button icon={<UploadOutlined/>}>Upload</Button>
                         </Upload>
