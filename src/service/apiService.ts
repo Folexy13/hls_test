@@ -1,58 +1,66 @@
 import axios from "axios";
 
-// export const apiBaseUrl = "http://localhost:8000/api"//"https://www.hls.com.ng/api";
-export const apiBaseUrl = "https://www.hls.com.ng/api";
+// export const apiBaseUrl = "http://localhost:8000/api"; // Local API URL
+export const apiBaseUrl = "https://www.hls.com.ng/api"; // Live API URL
+
+// Function to determine content type
+export const getContentType = (type?: string) => {
+    return type ? { "Content-Type": type } : { "Content-Type": "application/json" };
+};
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: apiBaseUrl,
-  headers: {
-    "Content-Type": "application/json", // Default content type
-  },
+    baseURL: apiBaseUrl,
+    headers: getContentType(),
 });
 
 // Request interceptor to attach token
 axiosInstance.interceptors.request.use(
-  (config) => {
-    // Get the token from localStorage or another secure storage
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+    (config) => {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
 );
 
 // Response interceptor to handle errors globally
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle token expiration or unauthorized errors
-    if (error.response?.status === 401) {
-      console.error("Unauthorized! Redirecting to login...");
-      // Optionally, handle logout or redirection
-      // window.location.href = "/login";
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            console.error("Unauthorized! Redirecting to login...");
+            // window.location.href = "/login";
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 // Utility functions for API calls
 export const api = {
-  get: (url: string, params?: object, headers?: object) =>
-    axiosInstance.get(url, { params, headers }),
+    get: (url: string, params?: object, headers?: object) =>
+        axiosInstance.get(url, { params, headers }),
 
-  post: (url: string, data?: object, headers?: object) =>
-    axiosInstance.post(url, data, { headers }),
+    post: (url: string, data?: object, headers?: object) =>
+        axiosInstance.post(url, data, {
+            headers: {
+                ...(data instanceof FormData ? getContentType("multipart/form-data") : getContentType()),
+                ...headers,
+            },
+        }),
 
-  put: (url: string, data?: object, headers?: object) =>
-    axiosInstance.put(url, data, { headers }),
+    put: (url: string, data?: object, headers?: object) =>
+        axiosInstance.put(url, data, {
+            headers: {
+                ...(data instanceof FormData ? getContentType("multipart/form-data") : getContentType()),
+                ...headers,
+            },
+        }),
 
-  delete: (url: string, headers?: object) =>
-    axiosInstance.delete(url, { headers }),
+    delete: (url: string, headers?: object) =>
+        axiosInstance.delete(url, { headers }),
 };
 
 export default axiosInstance;

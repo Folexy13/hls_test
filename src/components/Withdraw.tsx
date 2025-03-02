@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ArrowLeft} from 'lucide-react';
-import {Button, Table, Input, Modal, notification, Form, message} from 'antd';
+import {Button, Input, Modal, notification, Form, message} from 'antd';
 import {jwtDecode} from "jwt-decode";
 import {api, apiBaseUrl} from "../service/apiService.ts";
 
@@ -78,12 +78,12 @@ const Withdraw = () => {
         notification.success({message: `${transactionType === 'deposit' ? 'Deposit' : 'Withdrawal'} successful!`});
     };
 
-    const columns = [
-        {title: 'Transaction Type', dataIndex: 'type', key: 'type'},
-        {title: 'Amount', dataIndex: 'amount', key: 'amount'},
-        {title: 'Date', dataIndex: 'date', key: 'date'},
-        {title: 'Status', dataIndex: 'status', key: 'status'},
-    ];
+    // const columns = [
+    //     {title: 'Transaction Type', dataIndex: 'type', key: 'type'},
+    //     {title: 'Amount', dataIndex: 'amount', key: 'amount'},
+    //     {title: 'Date', dataIndex: 'date', key: 'date'},
+    //     {title: 'Status', dataIndex: 'status', key: 'status'},
+    // ];
 
     return (
         <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
@@ -114,15 +114,15 @@ const Withdraw = () => {
                         Withdraw Funds
                     </Button>
 
-                    <div className="overflow-x-auto mt-6">
-                        <Table
-                            columns={columns}
-                            dataSource={transactions}
-                            pagination={false}
-                            scroll={{x: 800}} // Enables horizontal scrolling
-                            className="w-full"
-                        />
-                    </div>
+                    {/*<div className="overflow-x-auto mt-6">*/}
+                    {/*    <Table*/}
+                    {/*        columns={columns}*/}
+                    {/*        dataSource={transactions}*/}
+                    {/*        pagination={false}*/}
+                    {/*        scroll={{x: 800}} // Enables horizontal scrolling*/}
+                    {/*        className="w-full"*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                 </div>
             </div>
 
