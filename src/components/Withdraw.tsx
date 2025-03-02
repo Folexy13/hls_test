@@ -86,7 +86,7 @@ const Withdraw = () => {
     // ];
 
     return (
-        <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
+        <div className="sm:block flex items-center justify-center bg-gray-100 p-4">
             <div className="md:max-w-7xl w-11/12 mx-auto">
                 <button
                     onClick={() => navigate('/dashboard')}
