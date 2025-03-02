@@ -194,10 +194,13 @@ const Supplements = () => {
                                             <Button size="small" onClick={() => handleEdit(supplement)}>
                                                 Edit
                                             </Button>
-                                            <span className="text-gray-500">
+                                            <p className={"flex flex-col"}>
+                                                <small>expires on:</small>
+                                                <span className="text-gray-500">
                             {dayjs(supplement.expiry).format("MMM D, YYYY")}
                         </span>
-                                            <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
+                                            </p>
+                                                        <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
                                                 Delete
                                             </Button>
                                         </div>
