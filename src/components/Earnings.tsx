@@ -75,10 +75,6 @@ const Earnings = () => {
             <p className="text-xl text-gray-900">₦10,500</p>
           </div>
 
-          {/* Add Earnings Button */}
-          <Button type="primary" className="mb-6">
-            Add Earnings
-          </Button>
 
           {/* Earnings Table */}
           <div className="hidden md:block">

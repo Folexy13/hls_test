@@ -24,6 +24,7 @@ const Supplements = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingSupplement, setEditingSupplement] = useState<any>(null);
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const [supplements, setSupplements] = useState<any[]>([]);
     const [fileList, setFileList] = useState<any>([]);
     const [, setIsMobile] = useState(window.innerWidth < 768);
@@ -48,9 +49,8 @@ const Supplements = () => {
     };
 
     const handleSubmit = async (values: any) => {
+        setLoading(true);
         const formData = new FormData();
-        console.log(fileList);
-
         formData.append("name", values.name);
         formData.append("price", values.price);
         formData.append("expiry", values.expiry.toISOString());
@@ -63,15 +63,17 @@ const Supplements = () => {
 
         try {
             const response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
-                    headers: getContentType("multipart/form-data")
-                });
+                headers: getContentType("multipart/form-data")
+            });
             setSupplements((prev) => [...prev, response.data]);
             message.success("Supplement added successfully");
             setIsModalVisible(false);
             form.resetFields();
             setFileList([]); // Clear uploaded file
-        } catch{
+        } catch {
             message.error("Failed to add supplement");
+        }finally {
+            setLoading(false)
         }
     };
 
@@ -174,32 +176,27 @@ const Supplements = () => {
                                 <Panel
                                     header={
                                         <div className="flex items-center justify-between">
+                                            <span><img
+                                                src={supplement.image}
+                                                alt={supplement.name}
+                                                className="w-12 h-12 object-cover rounded-lg" // Smaller image size
+                                            /></span>
                                             <span className="font-semibold">{supplement.name}</span>
-                                            <span className="text-gray-500">
-                            {dayjs(supplement.expiry).format("MMM D, YYYY")}
-                        </span>
+                                            <span>₦{supplement.price.toLocaleString()}</span>
+
                                         </div>
                                     }
                                     key={supplement.id}
                                 >
                                     <div className="flex flex-col gap-2">
-                                        {/* Flex container for image and price */}
-                                        <div className="flex  gap-4">
-                                            <img
-                                                src={supplement.image}
-                                                alt={supplement.name}
-                                                className="w-12 h-12 object-cover rounded-lg" // Smaller image size
-                                            />
-                                            <p className="m-0">
-                                                <strong>Price:</strong> ₦{supplement.price.toLocaleString()}
-                                            </p>
-                                        </div>
-
                                         {/* Edit and Delete buttons */}
                                         <div className="flex justify-between mt-2">
                                             <Button size="small" onClick={() => handleEdit(supplement)}>
                                                 Edit
                                             </Button>
+                                            <span className="text-gray-500">
+                            {dayjs(supplement.expiry).format("MMM D, YYYY")}
+                        </span>
                                             <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
                                                 Delete
                                             </Button>
@@ -251,7 +248,7 @@ const Supplements = () => {
 
                     <div className="flex justify-end gap-2">
                         <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
                             {editingSupplement ? "Save Changes" : "Add Supplement"}
                         </Button>
                     </div>
