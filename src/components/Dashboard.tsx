@@ -24,8 +24,10 @@ import ProfileModal from "./profileModal.tsx"; // Import DownOutlined icon for d
 function Dashboard() {
     const navigate = useNavigate();
     const [pharmacy, setPharmacy] = useState("");
-    const [myWallet, setMyWallet] = useState<{ balance: number }>({balance: 0});
-    const [showModal,setShowModal] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, setMyWallet] = useState<{ balance: number }>({balance: 0});
+    const [showModal, setShowModal] = useState(false);
+    const balanceRef = localStorage.getItem("isBalance");
     const fetchWallet = async () => {
         // Get the auth token from localStorage
         const authToken = localStorage.getItem("authToken") ?? "";
@@ -34,10 +36,15 @@ function Dashboard() {
 
         const resp = await api.get(apiBaseUrl + "/wallets/" + decoded.user_id,);
         setMyWallet(resp.data);
+        localStorage.setItem("isBalance", resp.data.balance);
         message.success("Balance updated");
     };
     useEffect(() => {
-            fetchWallet();
+        if (!balanceRef) fetchWallet();
+        console.log(balanceRef)
+        return () => {
+
+        }
 
     }, []);  // Empty dependency array ensures this effect only runs once on mount
 
@@ -98,7 +105,7 @@ function Dashboard() {
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl sm:text-3xl flex items-center justify-center gap-2 font-bold mb-1">
-                            <span> {myWallet.balance}</span>
+                            <span> {balanceRef}</span>
                             <RefreshCcw onClick={fetchWallet} className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer"
                                         xlinkTitle="refresh dashboard"/>
                             <span></span>
@@ -177,7 +184,7 @@ function Dashboard() {
                     </div>
                 </section>
             </div>
-            <ProfileModal isOpen={showModal} onClose={()=>setShowModal(false)} />
+            <ProfileModal isOpen={showModal} onClose={() => setShowModal(false)}/>
         </div>
     );
 }

@@ -127,17 +127,7 @@ const Account = () => {
               ))}
             </Collapse>
 
-            <Collapse accordion expandIconPosition="end" className="mt-4">
-              {paymentData.map((payment) => (
-                <Panel header={payment.packName} key={payment.key}>
-                  <p><strong>Details:</strong> {payment.details}</p>
-                  <Radio.Group>
-                    <Radio value="yes">Yes</Radio>
-                    <Radio value="no">No</Radio>
-                  </Radio.Group>
-                </Panel>
-              ))}
-            </Collapse>
+
           </div>
 
           {/* Table for Larger Screens */}

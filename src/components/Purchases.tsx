@@ -1,62 +1,55 @@
-import  { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { Table, Button, Collapse } from 'antd';
+import {Table, Collapse, Radio} from 'antd';
 
 const { Panel } = Collapse;
 
 // Sample data for purchases
-const initialPurchases = [
+
+const paymentColumns = [
+  { title: "Payment Reference", dataIndex: "reference", key: "reference" },
+  { title: "Pack Name", dataIndex: "packName", key: "packName" },
   {
-    key: '1',
-    receiptNumber: 'BNF-20250101',
-    date: '2025-01-01',
-    totalPurchase: 4500,
-    benfekName: 'Benfek A',
-    items: ['Item 1', 'Item 2', 'Item 3'],
+    title: "Reveal Detail",
+    key: "details",
+    render: (_: any, record: any) => (
+        <Collapse expandIconPosition="end">
+          <Panel header="Reveal Details" key={record.key}>
+            <p>{record.details}</p>
+          </Panel>
+        </Collapse>
+    ),
   },
   {
-    key: '2',
-    receiptNumber: 'BNF-20250110',
-    date: '2025-01-10',
-    totalPurchase: 6200,
-    benfekName: 'Benfek B',
-    items: ['Item 4', 'Item 5'],
+    title: "Approve Transaction",
+    key: "approve",
+    render: () => (
+        <Radio.Group>
+          <Radio value="yes">Yes</Radio>
+          <Radio value="no">No</Radio>
+        </Radio.Group>
+    ),
+  },
+];
+
+const paymentData = [
+  {
+    key: "1",
+    reference: "PAY12345",
+    packName: "Gold Package",
+    details: "Details about the Gold Package",
   },
   {
-    key: '3',
-    receiptNumber: 'BNF-20250112',
-    date: '2025-01-12',
-    totalPurchase: 8000,
-    benfekName: 'Benfek C',
-    items: ['Item 6', 'Item 7', 'Item 8', 'Item 9'],
+    key: "2",
+    reference: "PAY12346",
+    packName: "Silver Package",
+    details: "Details about the Silver Package",
   },
 ];
 
 const Purchases = () => {
   const navigate = useNavigate();
-  const [purchases] = useState(initialPurchases);
-  const [expandedRow, setExpandedRow] = useState<string | null>(null);
-
-  const toggleDetails = (key: string) => {
-    setExpandedRow(expandedRow === key ? null : key);
-  };
-
-  const columns = [
-    { title: 'Receipt Number', dataIndex: 'receiptNumber', key: 'receiptNumber' },
-    { title: 'Date', dataIndex: 'date', key: 'date' },
-    { title: 'Total Purchase (₦)', dataIndex: 'totalPurchase', key: 'totalPurchase' },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_: any, record: any) => (
-        <Button type="link" onClick={() => toggleDetails(record.key)}>
-          {expandedRow === record.key ? 'Hide Details' : 'Explicit Detail'}
-        </Button>
-      ),
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="md:max-w-7xl w-11/12 mx-auto">
@@ -75,32 +68,25 @@ const Purchases = () => {
           {/* Table for larger screens */}
           <div className="hidden md:block">
             <Table
-              columns={columns}
-              dataSource={purchases}
-              pagination={false}
-              className="mt-6"
+                columns={paymentColumns}
+                dataSource={paymentData}
+                pagination={false}
+                scroll={{ x: "100%" }}
+                className="w-full mt-6"
             />
           </div>
 
           {/* Accordion for smaller screens */}
           <div className="block md:hidden">
-            <Collapse accordion>
-              {purchases.map((purchase) => (
-                <Panel
-                  header={`${purchase.receiptNumber} - ₦${purchase.totalPurchase}`}
-                  key={purchase.key}
-                >
-                  <p><strong>Date:</strong> {purchase.date}</p>
-                  <Button type="link" onClick={() => toggleDetails(purchase.key)}>
-                    {expandedRow === purchase.key ? 'Hide Details' : 'Explicit Detail'}
-                  </Button>
-                  {expandedRow === purchase.key && (
-                    <div className="mt-2">
-                      <p><strong>Benfek Name:</strong> {purchase.benfekName}</p>
-                      <p><strong>Items:</strong> {purchase.items.join(', ')}</p>
-                    </div>
-                  )}
-                </Panel>
+            <Collapse accordion expandIconPosition="end" className="mt-4">
+              {paymentData.map((payment) => (
+                  <Panel header={payment.packName} key={payment.key}>
+                    <p><strong>Details:</strong> {payment.details}</p>
+                    <Radio.Group>
+                      <Radio value="yes">Yes</Radio>
+                      <Radio value="no">No</Radio>
+                    </Radio.Group>
+                  </Panel>
               ))}
             </Collapse>
           </div>

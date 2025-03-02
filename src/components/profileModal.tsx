@@ -27,7 +27,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     };
 
     return (
-        <Modal open={isOpen} onCancel={onClose} footer={null} title={"Update Profile"}>
+        <Modal  open={isOpen} onCancel={onClose} footer={null} title={"Update Profile"}>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Input prefix={<UserOutlined />} value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" required />
 
