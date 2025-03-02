@@ -28,6 +28,8 @@ function Dashboard() {
     const [_, setMyWallet] = useState<{ balance: number }>({balance: 0});
     const [showModal, setShowModal] = useState(false);
     const balanceRef = localStorage.getItem("isBalance");
+
+
     const fetchWallet = async () => {
         // Get the auth token from localStorage
         const authToken = localStorage.getItem("authToken") ?? "";
@@ -70,6 +72,31 @@ function Dashboard() {
         localStorage.removeItem("authToken");
         window.location.href = "/login";
     }
+
+
+
+    // Detect back button or page refresh
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+
+            // Show alert for confirmation
+            const confirmLogout = window.confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                handleLogout();
+            }
+
+            // Required for Chrome
+            event.returnValue = "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
+
 
     // Menu for dropdown options
     const menu = (
