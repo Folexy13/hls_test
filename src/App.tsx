@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate,createBrowserRouter ,RouterProvider} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Account from './components/Account';
@@ -16,64 +16,36 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const authToken = localStorage.getItem('authToken');
   return authToken ? children : <Navigate to="/login" />;
 };
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Navigate to={localStorage.getItem("authToken") ? "/dashboard" : "/login"} />,
-  },
-  {
-    path: "/login",
-    element: localStorage.getItem("authToken") ? <Navigate to="/dashboard" /> : <Login />,
-  },
-  {
-    path: "/dashboard",
-    element: <PrivateRoute><Dashboard /></PrivateRoute>,
-  },
-  {
-    path: "/account",
-    element: <PrivateRoute><Account /></PrivateRoute>,
-  },
-  {
-    path: "/earnings",
-    element: <PrivateRoute><Earnings /></PrivateRoute>,
-  },
-  {
-    path: "/withdraw",
-    element: <PrivateRoute><Withdraw /></PrivateRoute>,
-  },
-  {
-    path: "/benfeks",
-    element: <PrivateRoute><Benfeks /></PrivateRoute>,
-  },
-  {
-    path: "/purchases",
-    element: <PrivateRoute><Purchases /></PrivateRoute>,
-  },
-  {
-    path: "/add-benfek",
-    element: <PrivateRoute><AddBenfek /></PrivateRoute>,
-  },
-  {
-    path: "/supplements",
-    element: <PrivateRoute><Supplements /></PrivateRoute>,
-  },
-  {
-    path: "/articles",
-    element: <PrivateRoute><Articles /></PrivateRoute>,
-  },
-  {
-    path: "/podcasts",
-    element: <PrivateRoute><Podcasts /></PrivateRoute>,
-  },
-  {
-    path: "*",
-    element: <Navigate to="/login" />,
-  },
-]);
-function App() {
-  // const authToken = localStorage.getItem('authToken');
 
-  return <RouterProvider router={router}/>;
+function App() {
+  const authToken = localStorage.getItem('authToken');
+
+  return (
+    <Router>
+      <Routes>
+        {/* Redirect to login if no token, otherwise go to dashboard */}
+        <Route path="/" element={<Navigate to={authToken ? "/dashboard" : "/login"} />} />
+
+        {/* Login page should not be accessible if logged in */}
+        <Route path="/login" element={authToken ? <Navigate to="/dashboard" /> : <Login />} />
+
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/account" element={<PrivateRoute><Account /></PrivateRoute>} />
+        <Route path="/earnings" element={<PrivateRoute><Earnings /></PrivateRoute>} />
+        <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
+        <Route path="/benfeks" element={<PrivateRoute><Benfeks /></PrivateRoute>} />
+        <Route path="/purchases" element={<PrivateRoute><Purchases /></PrivateRoute>} />
+        <Route path="/add-benfek" element={<PrivateRoute><AddBenfek /></PrivateRoute>} />
+        <Route path="/supplements" element={<PrivateRoute><Supplements /></PrivateRoute>} />
+        <Route path="/articles" element={<PrivateRoute><Articles /></PrivateRoute>} />
+        <Route path="/podcasts" element={<PrivateRoute><Podcasts /></PrivateRoute>} />
+
+        {/* Catch-all route: If user visits an unknown route, redirect to login */}
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

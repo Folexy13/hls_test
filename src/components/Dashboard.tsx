@@ -227,7 +227,7 @@
 // }
 //
 // export default Dashboard;
-import { useBlocker, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import {
     User,
     RefreshCcw,
@@ -252,9 +252,9 @@ import ProfileModal from "./profileModal.tsx";
 
 function Dashboard() {
     // Block in-app navigation (e.g., back button)
-    const blocker = useBlocker(({ currentLocation, nextLocation }) => {
-        return currentLocation.pathname !== nextLocation.pathname;
-    });
+    // const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    //     return currentLocation.pathname !== nextLocation.pathname;
+    // });
 
     const navigate = useNavigate();
     const [pharmacy, setPharmacy] = useState("");

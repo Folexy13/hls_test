@@ -195,8 +195,7 @@ const Supplements = () => {
                                                 Edit
                                             </Button>
                                             <p className={"flex flex-col"}>
-                                                <small>expires on:</small>
-                                                <span className="text-gray-500">
+                                                <span className="text-red-600">
                             {dayjs(supplement.expiry).format("MMM D, YYYY")}
                         </span>
                                             </p>
