@@ -345,7 +345,7 @@ function Dashboard() {
                             <span></span>
                         </h1>
                         {pharmacy ? (
-                            <p className="text-blue-100 text-lg font-extrabold">{`${pharmacy}'S PHARMACY`}</p>
+                            <p className="text-blue-100 text-lg font-extrabold">{`${pharmacy}`}</p>
                         ) : (
                             <Loader className={"m-auto"} />
                         )}
