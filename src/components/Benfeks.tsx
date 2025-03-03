@@ -85,7 +85,7 @@ const BenfeksPage = () => {
                                     width: "10px",
                                     height: "10px",
                                     borderRadius: "50%",
-                                    backgroundColor: benfek.is_registered ? "green" : "red",
+                                    backgroundColor: benfek.is_registered ? "green" : "orange",
                                   }}
                               ></span>
                             </div>
