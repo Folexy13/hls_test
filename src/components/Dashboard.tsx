@@ -293,17 +293,17 @@ function Dashboard() {
         window.location.href = "/login";
     };
 
-    useEffect(() => {
-        if (blocker.state === "blocked") {
-            const confirmLogout = window.confirm("Are you sure you want to log out?");
-            if (confirmLogout) {
-                handleLogout();
-                blocker.proceed(); // Allow navigation
-            } else {
-                blocker.reset(); // Reset the blocker
-            }
-        }
-    }, [blocker]);
+  //  useEffect(() => {
+       // if (blocker.state === "blocked") {
+            //const confirmLogout = window.confirm("Are you sure you want to log out?");
+          //  if (confirmLogout) {
+               // handleLogout();
+                //blocker.proceed(); // Allow navigation
+           // } else {
+            //    blocker.reset(); // Reset the blocker
+           // }
+     //   }
+ //   }, [blocker]);
 
     const menu = (
         <Menu>
