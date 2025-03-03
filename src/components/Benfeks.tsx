@@ -53,7 +53,7 @@ const BenfeksPage = () => {
 
   return (
       <div className="min-h-screen sm:block flex items-center justify-center bg-gray-100 p-4">
-        <div className="md:max-w-7xl w-11/12 mx-auto w-full">
+        <div className="md:max-w-7xl sm:w-11/12 mx-auto w-full">
           <button
               onClick={() => navigate("/dashboard")}
               className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1 hover:text-gray-900"
