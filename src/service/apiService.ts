@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const apiBaseUrl = "http://localhost:8000/api"; // Local API URL
-// export const apiBaseUrl = "https://www.hls.com.ng/api"; // Live API URL
+//export const apiBaseUrl = "http://localhost:8000/api"; // Local API URL
+export const apiBaseUrl = "https://www.hls.com.ng/api"; // Live API URL
 
 // Function to determine content type
 export const getContentType = (type?: string) => {
