@@ -10,3 +10,7 @@
         }
     }
 }
+
+:where(.css-1htoz2s).ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-expand-icon{
+    display: none !important;
+}
