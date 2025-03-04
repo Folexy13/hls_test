@@ -99,7 +99,7 @@ const BenfeksPage = () => {
                         </p>
                         <p>
                           <strong>Registered:</strong>{" "}
-                          {benfek.is_registered ? "Yes" : "No"}
+                          {benfek.is_registered ? "Registered" : "Pending"}
                         </p>
                       </Panel>
                   ))}
