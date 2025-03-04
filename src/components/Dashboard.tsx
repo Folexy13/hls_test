@@ -260,6 +260,7 @@ function Dashboard() {
     const [pharmacy, setPharmacy] = useState("");
     const [_, setMyWallet] = useState<{ balance: number }>({ balance: 0 });
     const [showModal, setShowModal] = useState(false);
+    const [userProfile, setUserProfile] = useState<any>({});
     const balanceRef = localStorage.getItem("isBalance");
 
     const fetchWallet = async () => {
@@ -281,7 +282,8 @@ function Dashboard() {
             const decoded: { user_id: string } = jwtDecode(authToken);
             const userId = decoded.user_id;
             const fetchPharmacyname = async () => {
-                const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/");
+                const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/")
+                setUserProfile(resp.data);
                 setPharmacy(resp.data.name.toUpperCase());
             };
             fetchPharmacyname();
@@ -415,7 +417,7 @@ function Dashboard() {
                     </div>
                 </section>
             </div>
-            <ProfileModal isOpen={showModal} onClose={() => setShowModal(false)} />
+            <ProfileModal isOpen={showModal} onClose={() => setShowModal(false)} userProfile={userProfile}/>
         </div>
     );
 }
