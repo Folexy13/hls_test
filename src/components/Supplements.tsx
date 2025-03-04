@@ -42,16 +42,16 @@ const Supplements = () => {
             });
 
             // Set the existing image file list
-            if (record.image) {
-                setFileList([{
-                    uid: '-1',
-                    name: 'image.png',
-                    status: 'done',
-                    url: record.image,
-                }]);
-            } else {
-                setFileList([]);
-            }
+            // if (record.image) {
+            //     setFileList([{
+            //         uid: '-1',
+            //         name: 'image.png',
+            //         status: 'done',
+            //         url: record.image,
+            //     }]);
+            // } else {
+            //     setFileList([]);
+            // }
         } catch (e) {
             console.log(e);
         }
