@@ -38,13 +38,9 @@ const Supplements = () => {
             name: record.name,
             price: record.price,
             expiry: dayjs(record.expiry),
-            image: record.image ? [{ url: record.image }] : [],
         });
 
-        // Set the file list if there's an image
-        if (record.image) {
-            setFileList([{ url: record.image }]);
-        }
+        
     } catch (e) {
         console.log(e);
     }
@@ -77,6 +73,9 @@ const Supplements = () => {
         let response;
         if (editingSupplement) {
             // Update existing supplement
+            if(!formData.image){
+                throw new Error("Upload an image")
+            }
             response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
                 headers: getContentType("multipart/form-data"),
             });
