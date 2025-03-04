@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {ArrowLeft} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
     Table,
     Modal,
@@ -13,11 +13,11 @@ import {
     Menu,
     Collapse, message, UploadFile,
 } from "antd";
-import {UploadOutlined, MoreOutlined} from "@ant-design/icons";
+import { UploadOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import {api, apiBaseUrl, getContentType} from "../service/apiService";
+import { api, apiBaseUrl, getContentType } from "../service/apiService";
 
-const {Panel} = Collapse;
+const { Panel } = Collapse;
 
 const Supplements = () => {
     const navigate = useNavigate();
@@ -28,24 +28,34 @@ const Supplements = () => {
     const [supplements, setSupplements] = useState<any[]>([]);
     const [fileList, setFileList] = useState<any>([]);
     const [, setIsMobile] = useState(window.innerWidth < 768);
-   const handleEdit = (record: any) => {
-    try {
-        setEditingSupplement(record);
-        setIsModalVisible(true);
 
-        // Populate the form with existing values
-        form.setFieldsValue({
-            name: record.name,
-            price: record.price,
-            expiry: dayjs(record.expiry),
-        });
+    const handleEdit = (record: any) => {
+        try {
+            setEditingSupplement(record);
+            setIsModalVisible(true);
 
-        
-    } catch (e) {
-        console.log(e);
-    }
-};
+            // Populate the form with existing values
+            form.setFieldsValue({
+                name: record.name,
+                price: record.price,
+                expiry: dayjs(record.expiry),
+            });
 
+            // Set the existing image file list
+            if (record.image) {
+                setFileList([{
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: record.image,
+                }]);
+            } else {
+                setFileList([]);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     const handleDelete = async (id: string) => {
         try {
@@ -56,55 +66,51 @@ const Supplements = () => {
         }
     };
 
- const handleSubmit = async (values: any) => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("price", values.price);
-    formData.append("expiry", values.expiry.toISOString());
+    const handleSubmit = async (values: any) => {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("price", values.price);
+        formData.append("expiry", values.expiry.toISOString());
 
-    // Include the image file
-    if (fileList.length > 0) {
-        const imageFile = fileList[0].originFileObj;
-        formData.append("image", imageFile);
-    }
-
-    try {
-        let response;
-        if (editingSupplement) {
-            // Update existing supplement
-            if(!formData.image){
-                throw new Error("Upload an image")
-            }
-            response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
-                headers: getContentType("multipart/form-data"),
-            });
-            setSupplements((prev) =>
-                prev.map((item) => (item.id === editingSupplement.id ? response.data : item))
-            );
-            message.success("Supplement updated successfully");
-        } else {
-            // Create new supplement
-            response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
-                headers: getContentType("multipart/form-data"),
-            });
-            setSupplements((prev) => [...prev, response.data]);
-            message.success("Supplement added successfully");
+        // Include the image file only if it exists
+        if (fileList.length > 0 && fileList[0].originFileObj) {
+            formData.append("image", fileList[0].originFileObj);
         }
 
-        setIsModalVisible(false);
-        form.resetFields();
-        setFileList([]);
-        setEditingSupplement(null);
-    } catch {
-        message.error(editingSupplement ? "Failed to update supplement" : "Failed to add supplement");
-    } finally {
-        setLoading(false);
-    }
-};
+        try {
+            let response;
+            if (editingSupplement) {
+                // Update existing supplement
+                response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
+                    headers: getContentType("multipart/form-data"),
+                });
+                setSupplements((prev) =>
+                    prev.map((item) => (item.id === editingSupplement.id ? response.data : item))
+                );
+                message.success("Supplement updated successfully");
+            } else {
+                // Create new supplement
+                response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
+                    headers: getContentType("multipart/form-data"),
+                });
+                setSupplements((prev) => [...prev, response.data]);
+                message.success("Supplement added successfully");
+            }
 
+            setIsModalVisible(false);
+            form.resetFields();
+            setFileList([]);
+            setEditingSupplement(null);
+        } catch (error) {
+            console.error(error);
+            message.error(editingSupplement ? "Failed to update supplement" : "Failed to add supplement");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const handleFileChange = ({fileList}: { fileList: UploadFile[] }) => {
+    const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         setFileList(fileList);
     };
 
@@ -132,7 +138,6 @@ const Supplements = () => {
             dataIndex: "image",
             key: "image",
             render: (text: string) => (
-
                 <img
                     src={text}
                     alt="Supplement"
@@ -140,7 +145,7 @@ const Supplements = () => {
                 />
             ),
         },
-        {title: "Name", dataIndex: "name", key: "name"},
+        { title: "Name", dataIndex: "name", key: "name" },
         {
             title: "Price (NGN)",
             dataIndex: "price",
@@ -168,7 +173,7 @@ const Supplements = () => {
                         </Menu>
                     }
                 >
-                    <Button icon={<MoreOutlined/>} className="border-0 bg-transparent"/>
+                    <Button icon={<MoreOutlined />} className="border-0 bg-transparent" />
                 </Dropdown>
             ),
         },
@@ -181,7 +186,7 @@ const Supplements = () => {
                     onClick={() => navigate('/dashboard')}
                     className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1   hover:text-gray-900"
                 >
-                    <ArrowLeft className="w-5 h-5"/>
+                    <ArrowLeft className="w-5 h-5" />
                     Back to Dashboard
                 </button>
 
@@ -193,7 +198,7 @@ const Supplements = () => {
 
                     {/* Table for larger screens */}
                     <div className="hidden md:block">
-                        <Table columns={columns} dataSource={supplements} pagination={false}/>
+                        <Table columns={columns} dataSource={supplements} pagination={false} />
                     </div>
 
                     {/* Accordion for smaller screens */}
@@ -223,10 +228,10 @@ const Supplements = () => {
                                             </Button>
                                             <p className={"flex flex-col"}>
                                                 <span className="text-red-600">
-                            {dayjs(supplement.expiry).format("MMM D, YYYY")}
-                        </span>
+                                                    {dayjs(supplement.expiry).format("MMM D, YYYY")}
+                                                </span>
                                             </p>
-                                                        <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
+                                            <Button size="small" danger onClick={() => handleDelete(supplement.id)}>
                                                 Delete
                                             </Button>
                                         </div>
@@ -247,19 +252,18 @@ const Supplements = () => {
                 destroyOnClose
             >
                 <Form form={form} onFinish={handleSubmit} layout="vertical">
-                    <Form.Item label="Name" name="name" rules={[{required: true, message: "Enter name!"}]}>
-                        <Input placeholder="Enter name"/>
+                    <Form.Item label="Name" name="name" rules={[{ required: true, message: "Enter name!" }]}>
+                        <Input placeholder="Enter name" />
                     </Form.Item>
 
-                    <Form.Item label="Price (NGN)" name="price" rules={[{required: true, message: "Enter price!"}]}>
-                        <Input placeholder="Enter price"/>
+                    <Form.Item label="Price (NGN)" name="price" rules={[{ required: true, message: "Enter price!" }]}>
+                        <Input placeholder="Enter price" />
                     </Form.Item>
 
                     <Form.Item label="Expiry Date" name="expiry"
-                               rules={[{required: true, message: "Select expiry date!"}]}>
-                        <DatePicker style={{width: "100%"}}/>
+                        rules={[{ required: true, message: "Select expiry date!" }]}>
+                        <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
-
 
                     {/* File Upload */}
                     <Form.Item label="Image" name="image">
@@ -271,7 +275,7 @@ const Supplements = () => {
                             onChange={handleFileChange}
                             accept="image/*"
                         >
-                            <Button icon={<UploadOutlined/>}>Upload</Button>
+                            <Button icon={<UploadOutlined />}>Upload</Button>
                         </Upload>
                     </Form.Item>
 
