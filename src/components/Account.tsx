@@ -82,7 +82,7 @@ const Account = () => {
                                     <p><strong>Amount:</strong> {transaction.amount}</p>
                                     <p><strong>Date:</strong> {transaction.date}</p>
                                     <Button
-                                        type="link">{transaction.type == "purchase" ? "Approve" : "View Details"}</Button>
+                                        type="link">{transaction.type == "Purchase" ? "Approve" : "View Details"}</Button>
                                 </Panel>
                             ))}
                         </Collapse>
