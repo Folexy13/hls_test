@@ -28,41 +28,28 @@ const Supplements = () => {
     const [supplements, setSupplements] = useState<any[]>([]);
     const [fileList, setFileList] = useState<any>([]);
     const [, setIsMobile] = useState(window.innerWidth < 768);
-    const handleEdit = (record: any) => {
-       try{
+   const handleEdit = (record: any) => {
+    try {
         setEditingSupplement(record);
-         setLoading(true);
-        const formData = new FormData();
-        formData.append("name", values.name);
-        formData.append("price", values.price);
-        formData.append("expiry", values.expiry.toISOString());
+        setIsModalVisible(true);
 
-        // Ensure the image file is appended correctly
-        if (fileList.length > 0) {
-            const imageFile = fileList[0].originFileObj;
-            formData.append("image", imageFile);
-        }
+        // Populate the form with existing values
         form.setFieldsValue({
             name: record.name,
             price: record.price,
             expiry: dayjs(record.expiry),
-            image: record.image ? [{url: record.image}] : [],
+            image: record.image ? [{ url: record.image }] : [],
         });
-        const response = await api.put(`${apiBaseUrl}/supplements/`, formData, {
-                headers: getContentType("multipart/form-data")
-            });
-            setSupplements((prev) => [...prev, response.data]);
-            message.success("Supplement added successfully");
-            setIsModalVisible(false);
-            form.resetFields();
-            setFileList([]); // Clear uploaded file
-        setIsModalVisible(true);
-       }catch(e){
-           cosnole.log(e)
-       }finally{
-           setLoading(false)
-       }
-    };
+
+        // Set the file list if there's an image
+        if (record.image) {
+            setFileList([{ url: record.image }]);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 
     const handleDelete = async (id: string) => {
         try {
@@ -73,34 +60,50 @@ const Supplements = () => {
         }
     };
 
-    const handleSubmit = async (values: any) => {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append("name", values.name);
-        formData.append("price", values.price);
-        formData.append("expiry", values.expiry.toISOString());
+ const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("price", values.price);
+    formData.append("expiry", values.expiry.toISOString());
 
-        // Ensure the image file is appended correctly
-        if (fileList.length > 0) {
-            const imageFile = fileList[0].originFileObj;
-            formData.append("image", imageFile);
-        }
+    // Include the image file
+    if (fileList.length > 0) {
+        const imageFile = fileList[0].originFileObj;
+        formData.append("image", imageFile);
+    }
 
-        try {
-            const response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
-                headers: getContentType("multipart/form-data")
+    try {
+        let response;
+        if (editingSupplement) {
+            // Update existing supplement
+            response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
+                headers: getContentType("multipart/form-data"),
+            });
+            setSupplements((prev) =>
+                prev.map((item) => (item.id === editingSupplement.id ? response.data : item))
+            );
+            message.success("Supplement updated successfully");
+        } else {
+            // Create new supplement
+            response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
+                headers: getContentType("multipart/form-data"),
             });
             setSupplements((prev) => [...prev, response.data]);
             message.success("Supplement added successfully");
-            setIsModalVisible(false);
-            form.resetFields();
-            setFileList([]); // Clear uploaded file
-        } catch {
-            message.error("Failed to add supplement");
-        }finally {
-            setLoading(false)
         }
-    };
+
+        setIsModalVisible(false);
+        form.resetFields();
+        setFileList([]);
+        setEditingSupplement(null);
+    } catch {
+        message.error(editingSupplement ? "Failed to update supplement" : "Failed to add supplement");
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     const handleFileChange = ({fileList}: { fileList: UploadFile[] }) => {
         setFileList(fileList);
