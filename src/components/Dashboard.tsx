@@ -247,7 +247,6 @@ import { useEffect, useState } from "react";
 import { api, apiBaseUrl } from "../service/apiService";
 import { jwtDecode } from "jwt-decode";
 import { Dropdown, Menu, message } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import ProfileModal from "./profileModal.tsx";
 
 function Dashboard() {
@@ -325,7 +324,6 @@ function Dashboard() {
                             <Dropdown overlay={menu} trigger={["click"]}>
                                 <div className="flex items-center cursor-pointer">
                                     <User className="w-6 h-6 sm:w-7 sm:h-7" />
-                                    <DownOutlined className="ml-1 w-3 h-3" />
                                 </div>
                             </Dropdown>
                         </div>

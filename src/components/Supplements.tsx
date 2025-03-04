@@ -179,7 +179,7 @@ const Supplements = () => {
                                             <span><img
                                                 src={supplement.image}
                                                 alt={supplement.name}
-                                                className="w-12 h-12 object-cover rounded-lg" // Smaller image size
+                                                className="w-8 h-8 object-cover rounded-lg" // Smaller image size
                                             /></span>
                                             <span className="font-semibold">{supplement.name}</span>
                                             <span>₦{supplement.price.toLocaleString()}</span>

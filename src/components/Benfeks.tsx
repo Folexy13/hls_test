@@ -47,7 +47,7 @@ const BenfeksPage = () => {
       title: "Registered",
       dataIndex: "is_registered",
       key: "is_registered",
-      render: (isRegistered: boolean) => (isRegistered ? "Yes" : "No"), // Convert boolean to "Yes" or "No"
+      render: (isRegistered: boolean) => (isRegistered ? "Registered" : "Pending"), // Convert boolean to "Yes" or "No"
     },
   ];
 
