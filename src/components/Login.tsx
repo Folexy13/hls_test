@@ -175,7 +175,7 @@ function Auth() {
                             >
                                 <option value="">Select Bank</option>
                                 {banks.map((bank: any) => (
-                                    <option key={bank.name} value={bank.name}>
+                                    <option key={bank.code} value={bank.code}>
                                         {bank.name}
                                     </option>
                                 ))}
