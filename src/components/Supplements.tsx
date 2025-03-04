@@ -29,14 +29,39 @@ const Supplements = () => {
     const [fileList, setFileList] = useState<any>([]);
     const [, setIsMobile] = useState(window.innerWidth < 768);
     const handleEdit = (record: any) => {
+       try{
         setEditingSupplement(record);
+         setLoading(true);
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("price", values.price);
+        formData.append("expiry", values.expiry.toISOString());
+
+        // Ensure the image file is appended correctly
+        if (fileList.length > 0) {
+            const imageFile = fileList[0].originFileObj;
+            formData.append("image", imageFile);
+        }
         form.setFieldsValue({
             name: record.name,
             price: record.price,
             expiry: dayjs(record.expiry),
             image: record.image ? [{url: record.image}] : [],
         });
+        const response = await api.put(`${apiBaseUrl}/supplements/`, formData, {
+                headers: getContentType("multipart/form-data")
+            });
+            setSupplements((prev) => [...prev, response.data]);
+            message.success("Supplement added successfully");
+            setIsModalVisible(false);
+            form.resetFields();
+            setFileList([]); // Clear uploaded file
         setIsModalVisible(true);
+       }catch(e){
+           cosnole.log(e)
+       }finally{
+           setLoading(false)
+       }
     };
 
     const handleDelete = async (id: string) => {
