@@ -35,6 +35,7 @@ const Withdraw = () => {
 
         const resp = await api.get(apiBaseUrl + "/wallets/" + decoded.user_id,);
         setMyWallet(resp.data);
+        setWalletBalance(resp.data.balance
     };
     useEffect(() => {
 
