@@ -336,7 +336,8 @@ function Dashboard() {
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl sm:text-3xl flex items-center justify-center gap-2 font-bold mb-1">
-                            <span> {balanceRef}</span>
+                            <span> { parseFloat(balanceRef??"0.00").toLocaleString()}</span>
+                           
                             <RefreshCcw
                                 onClick={fetchWallet}
                                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer"
