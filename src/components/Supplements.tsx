@@ -30,6 +30,7 @@ const Supplements = () => {
     const [, setIsMobile] = useState(window.innerWidth < 768);
 
     const handleEdit = (record: any) => {
+
         try {
             setEditingSupplement(record);
             setIsModalVisible(true);
@@ -77,11 +78,17 @@ const Supplements = () => {
         if (fileList.length > 0 && fileList[0].originFileObj) {
             formData.append("image", fileList[0].originFileObj);
         }
+        if(!formData.get("image")){
+            message.error("Image cannot be empty");
+            setLoading(false)
+            return;
+        }
 
         try {
-            let response;
+            let response:any;
             if (editingSupplement) {
                 // Update existing supplement
+
                 response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
                     headers: getContentType("multipart/form-data"),
                 });
@@ -273,7 +280,7 @@ const Supplements = () => {
                             beforeUpload={() => false} // Prevent auto-upload
                             fileList={fileList}
                             onChange={handleFileChange}
-                            accept="image/*"
+                            accept="image/jpeg,image/png"
                         >
                             <Button icon={<UploadOutlined />}>Upload</Button>
                         </Upload>
