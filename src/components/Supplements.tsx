@@ -270,6 +270,10 @@ const Supplements = () => {
                             <Input placeholder="Enter name" />
                         </Form.Item>
 
+                        <Form.Item label="Brand" name="brand" rules={[{ required: true, message: "Enter brand!" }]}>
+                            <Input placeholder="Enter brand" />
+                        </Form.Item>
+
                         <Form.Item label="Price (NGN)" name="price" rules={[{ required: true, message: "Enter price!" }]}>
                             <Input placeholder="Enter price" />
                         </Form.Item>
