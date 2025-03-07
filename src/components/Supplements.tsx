@@ -11,7 +11,9 @@ import {
     Upload,
     Dropdown,
     Menu,
-    Collapse, message, UploadFile,
+    Collapse,
+    message,
+    UploadFile,
 } from "antd";
 import { UploadOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -27,10 +29,15 @@ const Supplements = () => {
     const [loading, setLoading] = useState(false);
     const [supplements, setSupplements] = useState<any[]>([]);
     const [fileList, setFileList] = useState<any>([]);
+    const [searchTerm, setSearchTerm] = useState(""); // State for search term
     const [, setIsMobile] = useState(window.innerWidth < 768);
 
-    const handleEdit = (record: any) => {
+    // Filter supplements based on search term
+    const filteredSupplements = supplements.filter((supplement) =>
+        supplement.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
+    const handleEdit = (record: any) => {
         try {
             setEditingSupplement(record);
             setIsModalVisible(true);
@@ -41,18 +48,6 @@ const Supplements = () => {
                 price: record.price,
                 expiry: dayjs(record.expiry),
             });
-
-            // Set the existing image file list
-            // if (record.image) {
-            //     setFileList([{
-            //         uid: '-1',
-            //         name: 'image.png',
-            //         status: 'done',
-            //         url: record.image,
-            //     }]);
-            // } else {
-            //     setFileList([]);
-            // }
         } catch (e) {
             console.log(e);
         }
@@ -78,17 +73,16 @@ const Supplements = () => {
         if (fileList.length > 0 && fileList[0].originFileObj) {
             formData.append("image", fileList[0].originFileObj);
         }
-        if(!formData.get("image")){
+        if (!formData.get("image")) {
             message.error("Image cannot be empty");
-            setLoading(false)
+            setLoading(false);
             return;
         }
 
         try {
-            let response:any;
+            let response: any;
             if (editingSupplement) {
                 // Update existing supplement
-
                 response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
                     headers: getContentType("multipart/form-data"),
                 });
@@ -119,6 +113,10 @@ const Supplements = () => {
 
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         setFileList(fileList);
+    };
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value); // Update search term
     };
 
     useEffect(() => {
@@ -190,8 +188,8 @@ const Supplements = () => {
         <div className="min-h-screen bg-gray-100 p-4 flex justify-center">
             <div className="md:max-w-7xl w-11/12 mx-auto">
                 <button
-                    onClick={() => navigate('/dashboard')}
-                    className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1   hover:text-gray-900"
+                    onClick={() => navigate("/dashboard")}
+                    className="mb-6 flex items-center gap-2 text-white rounded bg-green-400 px-6 py-1 hover:text-gray-900"
                 >
                     <ArrowLeft className="w-5 h-5" />
                     Back to Dashboard
@@ -199,41 +197,46 @@ const Supplements = () => {
 
                 <div className="bg-white rounded-xl shadow-lg p-6">
                     <h1 className="text-2xl font-bold mb-6">Supplements</h1>
-                    <Button type="primary" onClick={() => setIsModalVisible(true)} className="mb-4">
-                        Add Supplement
-                    </Button>
+
+                    {/* Search Input */}
+                    <Input
+                        placeholder="Search by name..."
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        className="mb-4"
+                    />
 
                     {/* Table for larger screens */}
                     <div className="hidden md:block">
-                        <Table columns={columns} dataSource={supplements} pagination={false} />
+                        <Table columns={columns} dataSource={filteredSupplements} pagination={false} />
                     </div>
 
                     {/* Accordion for smaller screens */}
                     <div className="block md:hidden">
                         <Collapse accordion>
-                            {supplements.map((supplement) => (
+                            {filteredSupplements.map((supplement) => (
                                 <Panel
                                     header={
                                         <div className="flex items-center justify-between">
-                                            <span><img
-                                                src={supplement.image}
-                                                alt={supplement.name}
-                                                className="w-8 h-8 object-cover rounded-lg" // Smaller image size
-                                            /></span>
+                                            <span>
+                                                <img
+                                                    src={supplement.image}
+                                                    alt={supplement.name}
+                                                    className="w-8 h-8 object-cover rounded-lg"
+                                                />
+                                            </span>
                                             <span className="font-semibold">{supplement.name}</span>
                                             <span>₦{supplement.price.toLocaleString()}</span>
-
                                         </div>
                                     }
                                     key={supplement.id}
                                 >
                                     <div className="flex flex-col gap-2">
-                                        {/* Edit and Delete buttons */}
                                         <div className="flex justify-between mt-2">
                                             <Button size="small" onClick={() => handleEdit(supplement)}>
                                                 Edit
                                             </Button>
-                                            <p className={"flex flex-col"}>
+                                            <p className="flex flex-col">
                                                 <span className="text-red-600">
                                                     {dayjs(supplement.expiry).format("MMM D, YYYY")}
                                                 </span>
@@ -247,53 +250,57 @@ const Supplements = () => {
                             ))}
                         </Collapse>
                     </div>
+
+                    {/* Add Supplement Button at the Bottom */}
+                    <Button type="primary" onClick={() => setIsModalVisible(true)} className="mt-4">
+                        Add Supplement
+                    </Button>
                 </div>
+
+                {/* Modal for adding/editing */}
+                <Modal
+                    title={editingSupplement ? "Edit Supplement" : "Add New Supplement"}
+                    open={isModalVisible}
+                    onCancel={() => setIsModalVisible(false)}
+                    footer={null}
+                    destroyOnClose
+                >
+                    <Form form={form} onFinish={handleSubmit} layout="vertical">
+                        <Form.Item label="Name" name="name" rules={[{ required: true, message: "Enter name!" }]}>
+                            <Input placeholder="Enter name" />
+                        </Form.Item>
+
+                        <Form.Item label="Price (NGN)" name="price" rules={[{ required: true, message: "Enter price!" }]}>
+                            <Input placeholder="Enter price" />
+                        </Form.Item>
+
+                        <Form.Item label="Expiry Date" name="expiry" rules={[{ required: true, message: "Select expiry date!" }]}>
+                            <DatePicker style={{ width: "100%" }} />
+                        </Form.Item>
+
+                        {/* File Upload */}
+                        <Form.Item label="Image" name="image">
+                            <Upload
+                                listType="picture"
+                                maxCount={1}
+                                beforeUpload={() => false} // Prevent auto-upload
+                                fileList={fileList}
+                                onChange={handleFileChange}
+                                accept="image/jpeg,image/png"
+                            >
+                                <Button icon={<UploadOutlined />}>Upload</Button>
+                            </Upload>
+                        </Form.Item>
+
+                        <div className="flex justify-end gap-2">
+                            <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
+                            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+                                {editingSupplement ? "Save Changes" : "Add Supplement"}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal>
             </div>
-
-            {/* Modal for adding/editing */}
-            <Modal
-                title={editingSupplement ? "Edit Supplement" : "Add New Supplement"}
-                open={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
-                footer={null}
-                destroyOnClose
-            >
-                <Form form={form} onFinish={handleSubmit} layout="vertical">
-                    <Form.Item label="Name" name="name" rules={[{ required: true, message: "Enter name!" }]}>
-                        <Input placeholder="Enter name" />
-                    </Form.Item>
-
-                    <Form.Item label="Price (NGN)" name="price" rules={[{ required: true, message: "Enter price!" }]}>
-                        <Input placeholder="Enter price" />
-                    </Form.Item>
-
-                    <Form.Item label="Expiry Date" name="expiry"
-                        rules={[{ required: true, message: "Select expiry date!" }]}>
-                        <DatePicker style={{ width: "100%" }} />
-                    </Form.Item>
-
-                    {/* File Upload */}
-                    <Form.Item label="Image" name="image">
-                        <Upload
-                            listType="picture"
-                            maxCount={1}
-                            beforeUpload={() => false} // Prevent auto-upload
-                            fileList={fileList}
-                            onChange={handleFileChange}
-                            accept="image/jpeg,image/png"
-                        >
-                            <Button icon={<UploadOutlined />}>Upload</Button>
-                        </Upload>
-                    </Form.Item>
-
-                    <div className="flex justify-end gap-2">
-                        <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
-                        <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-                            {editingSupplement ? "Save Changes" : "Add Supplement"}
-                        </Button>
-                    </div>
-                </Form>
-            </Modal>
         </div>
     );
 };
