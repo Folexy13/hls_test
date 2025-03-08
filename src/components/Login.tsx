@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {User, Lock, Eye, EyeOff} from "lucide-react"; // Import eye icons
-import {endpoint} from "../service/actions";
-import {notification} from "antd";
-import logo from "../assets/logo.jpg"
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { User, Lock, Eye, EyeOff } from "lucide-react"; // Import eye icons
+import { endpoint } from "../service/actions";
+import { notification } from "antd";
+import logo from "../assets/logo.jpg";
 
 // Import Ant Design icons
-import {PhoneOutlined, HomeOutlined, BankFilled} from "@ant-design/icons";
+import { PhoneOutlined, HomeOutlined, BankFilled } from "@ant-design/icons";
 import axios from "axios";
 
 function Auth() {
@@ -23,8 +23,8 @@ function Auth() {
     const [banks, setBanks] = useState([]);
     const [selectedBank, setSelectedBank] = useState("");
     const [accountName, setAccountName] = useState("");
+    const [loading, setLoading] = useState(false); // Loading state for login/register button
     const navigate = useNavigate();
-
 
     // Fetch all banks on component mount
     useEffect(() => {
@@ -48,7 +48,7 @@ function Auth() {
             try {
                 const response = await axios.get(
                     `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${selectedBank}`,
-                    {headers: {Authorization: `Bearer sk_test_accd9e759dcf29e72d8ed562fa0d972265e5861a`}}
+                    { headers: { Authorization: `Bearer sk_test_accd9e759dcf29e72d8ed562fa0d972265e5861a` } }
                 );
                 setAccountName(response.data.data.account_name);
             } catch (error) {
@@ -62,16 +62,17 @@ function Auth() {
         e.preventDefault();
 
         if (password !== retypePassword && !isLogin) {
-            notification.error({message: "Passwords do not match."});
+            notification.error({ message: "Passwords do not match." });
             return;
         }
 
+        setLoading(true); // Start loading
 
         try {
             if (isLogin) {
                 // Call the loginUser method to authenticate the user
                 await endpoint.loginUser(username, password);
-                notification.success({message: "Login successful."});
+                notification.success({ message: "Login successful." });
                 navigate("/dashboard");
             } else {
                 // Call the registerUser method to create a new account
@@ -95,9 +96,11 @@ function Auth() {
             navigate("/dashboard");
         } catch (err: any) {
             notification.error({
-                message: err.response.data.error || err.message || "An error occurred",
+                message: err.response?.data?.error || err.message || "An error occurred",
             });
-            console.error("Error:", err.response.data.error);
+            console.error("Error:", err.response?.data?.error);
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
@@ -111,7 +114,7 @@ function Auth() {
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
                 <div className="text-center mb-8">
                     {/* Add logo above the heading */}
-                    <img src={logo} alt="Logo" className=" mx-auto mb-4"/>
+                    <img src={logo} alt="Logo" className=" mx-auto mb-4" />
 
                     <h1 className="text-3xl font-bold text-gray-800">
                         {isLogin ? "Welcome Back" : "Create an Account"}
@@ -121,11 +124,10 @@ function Auth() {
                     </p>
                 </div>
 
-
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <User className="h-5 w-5 text-gray-400"/>
+                            <User className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
                             type="text"
@@ -142,7 +144,7 @@ function Auth() {
                         <>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <HomeOutlined className="h-5 w-5 text-gray-400"/>
+                                    <HomeOutlined className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
                                     type="text"
@@ -156,7 +158,7 @@ function Auth() {
 
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <HomeOutlined className="h-5 w-5 text-gray-400"/>
+                                    <HomeOutlined className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
                                     type="text"
@@ -182,7 +184,7 @@ function Auth() {
                             </select>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <BankFilled className="h-5 w-5 text-gray-400"/>
+                                    <BankFilled className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
                                     type="text"
@@ -206,7 +208,7 @@ function Auth() {
 
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <PhoneOutlined className="h-5 w-5 text-gray-400"/>
+                                    <PhoneOutlined className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
                                     type="text"
@@ -223,7 +225,7 @@ function Auth() {
                     {/* Password field */}
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-gray-400"/>
+                            <Lock className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
                             type={passwordVisible ? "text" : "password"}
@@ -238,9 +240,9 @@ function Auth() {
                             onClick={() => setPasswordVisible(!passwordVisible)}
                         >
                             {passwordVisible ? (
-                                <EyeOff className="h-5 w-5 text-gray-400"/>
+                                <EyeOff className="h-5 w-5 text-gray-400" />
                             ) : (
-                                <Eye className="h-5 w-5 text-gray-400"/>
+                                <Eye className="h-5 w-5 text-gray-400" />
                             )}
                         </div>
                     </div>
@@ -249,7 +251,7 @@ function Auth() {
                     {!isLogin && (
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400"/>
+                                <Lock className="h-5 w-5 text-gray-400" />
                             </div>
                             <input
                                 type={retypePasswordVisible ? "text" : "password"}
@@ -264,9 +266,9 @@ function Auth() {
                                 onClick={() => setRetypePasswordVisible(!retypePasswordVisible)}
                             >
                                 {retypePasswordVisible ? (
-                                    <EyeOff className="h-5 w-5 text-gray-400"/>
+                                    <EyeOff className="h-5 w-5 text-gray-400" />
                                 ) : (
-                                    <Eye className="h-5 w-5 text-gray-400"/>
+                                    <Eye className="h-5 w-5 text-gray-400" />
                                 )}
                             </div>
                         </div>
@@ -274,9 +276,36 @@ function Auth() {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center"
+                        disabled={loading} // Disable the button while loading
                     >
-                        {isLogin ? "login" : "Register"}
+                        {loading ? (
+                            <span className="flex items-center">
+                                <svg
+                                    className="animate-spin h-5 w-5 mr-3 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                </svg>
+                                {isLogin ? "Logging in..." : "Registering..."}
+                            </span>
+                        ) : (
+                            isLogin ? "Login" : "Register"
+                        )}
                     </button>
                 </form>
                 <div className="mt-6 text-center">
@@ -287,7 +316,7 @@ function Auth() {
                                 onClick={() => setIsLogin(!isLogin)}
                                 className="bg-red-600 px-6 py-1.5 rounded  text-white hover:text-white-800"
                             >
-                                {isLogin ? "Register" : "login"}
+                                {isLogin ? "Register" : "Login"}
                             </button>
                         </p>
                     </p>
