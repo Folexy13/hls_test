@@ -83,7 +83,7 @@ const Supplements = () => {
             let response: any;
             if (editingSupplement) {
                 // Update existing supplement
-                response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}`, formData, {
+                response = await api.put(`${apiBaseUrl}/supplements/${editingSupplement.id}/`, formData, {
                     headers: getContentType("multipart/form-data"),
                 });
                 setSupplements((prev) =>
