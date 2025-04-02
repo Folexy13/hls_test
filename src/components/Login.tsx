@@ -151,7 +151,7 @@ function Auth() {
                                     value={pharmacyName}
                                     onChange={(e) => setPharmacyName(e.target.value)}
                                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Pharmacy Name"
+                                    placeholder="Principal Name"
                                     required
                                 />
                             </div>
@@ -165,7 +165,7 @@ function Auth() {
                                     value={pharmacyAddress}
                                     onChange={(e) => setPharmacyAddress(e.target.value)}
                                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Pharmacy Address"
+                                    placeholder="Practising Address"
                                     // required
                                 />
                             </div>
