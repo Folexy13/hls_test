@@ -291,7 +291,7 @@ function Dashboard() {
 
     const handleLogout = () => {
         localStorage.removeItem("authToken");
-        window.location.href = "/login";
+        window.location.replace("/login");
     };
 
   //  useEffect(() => {
