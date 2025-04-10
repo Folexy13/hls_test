@@ -208,7 +208,7 @@ const Supplements = () => {
 
                     {/* Table for larger screens */}
                     <div className="hidden md:block">
-                        <Table columns={columns} dataSource={filteredSupplements} pagination={false} />
+                        <Table columns={columns} dataSource={filteredSupplements} pagination={true} />
                     </div>
 
                     {/* Accordion for smaller screens */}
