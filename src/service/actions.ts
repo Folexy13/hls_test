@@ -28,31 +28,10 @@ class Endpoint {
     }
 
     // Method to register a new user
-    public async registerUser(
-        username: string,
-        password: string,
-        role: string,
-        name: string,
-        account_number: string, account_name: string,
-        bank_name: string,
-        address: string,
-        phone: string
-    ): Promise<void> {
+    public async registerUser(payload:any): Promise<void> {
         try {
             const response = await axios.post(
-                `${this.apiBaseUrl}/auth/register`,
-                {
-                    username,
-                    password,
-                    role,
-                    name,
-                    account_number,
-                    account_name,
-                    bank_name,
-                    address,
-                    phone,
-
-                }
+                `${this.apiBaseUrl}/auth/register`,{...payload}
             );
 
             return response.data;

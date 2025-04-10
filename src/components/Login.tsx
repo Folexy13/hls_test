@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { User, Lock, Eye, EyeOff } from "lucide-react"; // Import eye icons
-import { endpoint } from "../service/actions";
-import { notification } from "antd";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {Eye, EyeOff, Lock, User} from "lucide-react"; // Import eye icons
+import {endpoint} from "../service/actions";
+import {notification} from "antd";
 import logo from "../assets/logo.jpg";
 
 // Import Ant Design icons
-import { PhoneOutlined, HomeOutlined, BankFilled } from "@ant-design/icons";
+import {BankFilled, HomeOutlined, PhoneOutlined} from "@ant-design/icons";
 import axios from "axios";
 
 function Auth() {
@@ -25,6 +25,10 @@ function Auth() {
     const [accountName, setAccountName] = useState("");
     const [loading, setLoading] = useState(false); // Loading state for login/register button
     const navigate = useNavigate();
+    const [isMedicalProfessional, setIsMedicalProfessional] = useState(false);
+    const [isPharmacy, setIsPharmacy] = useState(false);
+    const [medicalField, setMedicalField] = useState("");
+    const [licenseNumber, setLicenseNumber] = useState("");
 
     // Fetch all banks on component mount
     useEffect(() => {
@@ -48,7 +52,7 @@ function Auth() {
             try {
                 const response = await axios.get(
                     `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${selectedBank}`,
-                    { headers: { Authorization: `Bearer sk_test_accd9e759dcf29e72d8ed562fa0d972265e5861a` } }
+                    {headers: {Authorization: `Bearer sk_test_accd9e759dcf29e72d8ed562fa0d972265e5861a`}}
                 );
                 setAccountName(response.data.data.account_name);
             } catch (error) {
@@ -62,7 +66,7 @@ function Auth() {
         e.preventDefault();
 
         if (password !== retypePassword && !isLogin) {
-            notification.error({ message: "Passwords do not match." });
+            notification.error({message: "Passwords do not match."});
             return;
         }
 
@@ -72,21 +76,28 @@ function Auth() {
             if (isLogin) {
                 // Call the loginUser method to authenticate the user
                 await endpoint.loginUser(username, password);
-                notification.success({ message: "Login successful." });
+                notification.success({message: "Login successful."});
                 navigate("/dashboard");
             } else {
-                // Call the registerUser method to create a new account
-                await endpoint.registerUser(
+                const registrationData = {
                     username,
                     password,
-                    "principal",
-                    pharmacyName, // Send pharmacy name for registration
+                    role: "principal",
+                    pharmacyName,
                     accountNumber,
                     accountName,
-                    selectedBank,
-                    pharmacyAddress, // Send pharmacy address for registration
-                    phone // Send phone for registration
-                );
+                    bankCode: selectedBank,
+                    pharmacyAddress,
+                    phone,
+                    isMedicalProfessional,
+                    isPharmacy,
+                    ...(isMedicalProfessional && {
+                        medicalField,
+                        licenseNumber,
+                        withdrawalSlots: isPharmacy ? 3 : 1 // Set withdrawal slots based on pharmacy status
+                    })
+                };
+                await endpoint.registerUser(registrationData);
 
                 notification.success({
                     message: "Registration successful. Please log in.",
@@ -114,7 +125,7 @@ function Auth() {
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
                 <div className="text-center mb-8">
                     {/* Add logo above the heading */}
-                    <img src={logo} alt="Logo" className=" mx-auto mb-4" />
+                    <img src={logo} alt="Logo" className=" mx-auto mb-4"/>
 
                     <h1 className="text-3xl font-bold text-gray-800">
                         {isLogin ? "Welcome Back" : "Create an Account"}
@@ -127,7 +138,7 @@ function Auth() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <User className="h-5 w-5 text-gray-400" />
+                            <User className="h-5 w-5 text-gray-400"/>
                         </div>
                         <input
                             type="text"
@@ -144,7 +155,7 @@ function Auth() {
                         <>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <HomeOutlined className="h-5 w-5 text-gray-400" />
+                                    <HomeOutlined className="h-5 w-5 text-gray-400"/>
                                 </div>
                                 <input
                                     type="text"
@@ -155,10 +166,74 @@ function Auth() {
                                     required
                                 />
                             </div>
+                            <div className="flex items-center mb-4">
+                                <input
+                                    type="checkbox"
+                                    id="isMedicalProfessional"
+                                    checked={isMedicalProfessional}
+                                    onChange={(e) => {
+                                        setIsMedicalProfessional(e.target.checked);
+                                        if (!e.target.checked) {
+                                            setIsPharmacy(false);
+                                            setMedicalField("");
+                                            setLicenseNumber("");
+                                        }
+                                    }}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="isMedicalProfessional" className="ml-2 block text-sm text-gray-700">
+                                    Are you a medical professional?
+                                </label>
+                            </div>
+
+                            {/* Medical Professional Details (shown if checked) */}
+                            {isMedicalProfessional && (
+                                <>
+                                    {/* Pharmacy Checkbox */}
+                                    <div className="flex items-center mb-4">
+                                        <input
+                                            type="checkbox"
+                                            id="isPharmacy"
+                                            checked={isPharmacy}
+                                            onChange={(e) => setIsPharmacy(e.target.checked)}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor="isPharmacy" className="ml-2 block text-sm text-gray-700">
+                                            Is this a pharmacy?
+                                        </label>
+                                    </div>
+
+                                    {/* Medical Field Selection */}
+                                    <select
+                                        value={medicalField}
+                                        onChange={(e) => setMedicalField(e.target.value)}
+                                        className="block w-full p-2 border border-gray-300 rounded-lg mb-4"
+                                        required={isMedicalProfessional}
+                                    >
+                                        <option value="">Select Medical Field</option>
+                                        <option value="doctor">Doctor</option>
+                                        <option value="nurse">Nurse</option>
+                                        <option value="pharmacist">Pharmacist</option>
+                                        <option value="other">Other Medical Professional</option>
+                                    </select>
+
+                                    {/* License Number */}
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={licenseNumber}
+                                            onChange={(e) => setLicenseNumber(e.target.value)}
+                                            className="block w-full p-2 border border-gray-300 rounded-lg"
+                                            placeholder="License Number"
+                                            required={isMedicalProfessional}
+                                        />
+                                    </div>
+                                </>
+                            )}
 
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <HomeOutlined className="h-5 w-5 text-gray-400" />
+                                    <HomeOutlined className="h-5 w-5 text-gray-400"/>
                                 </div>
                                 <input
                                     type="text"
@@ -184,7 +259,7 @@ function Auth() {
                             </select>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <BankFilled className="h-5 w-5 text-gray-400" />
+                                    <BankFilled className="h-5 w-5 text-gray-400"/>
                                 </div>
                                 <input
                                     type="text"
@@ -208,7 +283,7 @@ function Auth() {
 
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <PhoneOutlined className="h-5 w-5 text-gray-400" />
+                                    <PhoneOutlined className="h-5 w-5 text-gray-400"/>
                                 </div>
                                 <input
                                     type="text"
@@ -220,12 +295,14 @@ function Auth() {
                                 />
                             </div>
                         </>
-                    )}
+                    )
+                    }
 
-                    {/* Password field */}
+                    {/* Password field */
+                    }
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Lock className="h-5 w-5 text-gray-400" />
+                            <Lock className="h-5 w-5 text-gray-400"/>
                         </div>
                         <input
                             type={passwordVisible ? "text" : "password"}
@@ -240,39 +317,42 @@ function Auth() {
                             onClick={() => setPasswordVisible(!passwordVisible)}
                         >
                             {passwordVisible ? (
-                                <EyeOff className="h-5 w-5 text-gray-400" />
+                                <EyeOff className="h-5 w-5 text-gray-400"/>
                             ) : (
-                                <Eye className="h-5 w-5 text-gray-400" />
+                                <Eye className="h-5 w-5 text-gray-400"/>
                             )}
                         </div>
                     </div>
 
-                    {/* Retype Password field */}
-                    {!isLogin && (
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400" />
+                    {/* Retype Password field */
+                    }
+                    {
+                        !isLogin && (
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Lock className="h-5 w-5 text-gray-400"/>
+                                </div>
+                                <input
+                                    type={retypePasswordVisible ? "text" : "password"}
+                                    value={retypePassword}
+                                    onChange={(e) => setRetypePassword(e.target.value)}
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Retype Password"
+                                    required
+                                />
+                                <div
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                    onClick={() => setRetypePasswordVisible(!retypePasswordVisible)}
+                                >
+                                    {retypePasswordVisible ? (
+                                        <EyeOff className="h-5 w-5 text-gray-400"/>
+                                    ) : (
+                                        <Eye className="h-5 w-5 text-gray-400"/>
+                                    )}
+                                </div>
                             </div>
-                            <input
-                                type={retypePasswordVisible ? "text" : "password"}
-                                value={retypePassword}
-                                onChange={(e) => setRetypePassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Retype Password"
-                                required
-                            />
-                            <div
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                                onClick={() => setRetypePasswordVisible(!retypePasswordVisible)}
-                            >
-                                {retypePasswordVisible ? (
-                                    <EyeOff className="h-5 w-5 text-gray-400" />
-                                ) : (
-                                    <Eye className="h-5 w-5 text-gray-400" />
-                                )}
-                            </div>
-                        </div>
-                    )}
+                        )
+                    }
 
                     <button
                         type="submit"
@@ -323,7 +403,8 @@ function Auth() {
                 </div>
             </div>
         </div>
-    );
+    )
+        ;
 }
 
 export default Auth;
