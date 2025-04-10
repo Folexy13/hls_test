@@ -294,18 +294,6 @@ function Dashboard() {
         window.location.replace("/login");
     };
 
-  //  useEffect(() => {
-       // if (blocker.state === "blocked") {
-            //const confirmLogout = window.confirm("Are you sure you want to log out?");
-          //  if (confirmLogout) {
-               // handleLogout();
-                //blocker.proceed(); // Allow navigation
-           // } else {
-            //    blocker.reset(); // Reset the blocker
-           // }
-     //   }
- //   }, [blocker]);
-
     const menu = (
         <Menu>
             <Menu.Item key="profile" onClick={() => setShowModal(true)}>
