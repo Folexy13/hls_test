@@ -12,12 +12,14 @@ const Withdraw = () => {
     const [transactionType, setTransactionType] = useState<'deposit' | 'withdraw'>('deposit');
     const [myWallet, setMyWallet] = useState<{ balance: number }>({balance: 0});
     const [walletBalance, setWalletBalance] = useState(myWallet.balance ?? 0); // Initial wallet balance
-    const [withDrawalCount, setWithDrawalCount] = useState<number | null>(null);
+    const [withDrawalCount, setWithDrawalCount] = useState<number | null>(0);
+    const [slot, setSlot] = useState<number | null>(2);
     const [form] = Form.useForm(); // Use Form hook to manage form state
     useEffect(() => {
         const fetchWIthdrawalCount = async () => {
             const resp = await api.get(`${apiBaseUrl}/wallet/withdrawals/count/`)
             setWithDrawalCount(resp.data.withdrawals_count);
+            setSlot(resp.data.slot);
         }
         fetchWIthdrawalCount()
     }, []);
@@ -100,7 +102,7 @@ const Withdraw = () => {
                 <div className="bg-white rounded-xl shadow-lg p-6">
                     <h1 className="text-2xl font-bold mb-6 flex items-center justify-between">
                         <span>Withdraw</span>
-                        <span className={"text-xs"}> {withDrawalCount} / 2 withdrawals left</span>
+                        <span className={"text-xs"}> {withDrawalCount} / {slot} withdrawals left</span>
                     </h1>
                     <p className="text-gray-600 mb-6">Manage your wallet transactions here.</p>
 
