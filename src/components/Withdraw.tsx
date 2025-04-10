@@ -19,7 +19,7 @@ const Withdraw = () => {
         const fetchWIthdrawalCount = async () => {
             const resp = await api.get(`${apiBaseUrl}/wallet/withdrawals/count/`)
             setWithDrawalCount(resp.data.withdrawals_count);
-            setSlot(resp.data.slot);
+            setSlot(resp.data.slots);
         }
         fetchWIthdrawalCount()
     }, []);
