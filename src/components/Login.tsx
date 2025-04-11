@@ -83,7 +83,7 @@ function Auth() {
                     username,
                     password,
                     role: "principal",
-                    pharmacyName,
+                    name:pharmacyName,
                     accountNumber,
                     accountName,
                     bankCode: selectedBank,
