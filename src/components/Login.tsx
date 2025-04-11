@@ -25,7 +25,7 @@ function Auth() {
     const [accountName, setAccountName] = useState("");
     const [loading, setLoading] = useState(false); // Loading state for login/register button
     const navigate = useNavigate();
-    const [isMedicalProfessional, setIsMedicalProfessional] = useState(false);
+    const [isMedicalProfessional, setIsMedicalProfessional] = useState(true);
     const [isPharmacy, setIsPharmacy] = useState(false);
     const [medicalField, setMedicalField] = useState("");
     const [licenseNumber, setLicenseNumber] = useState("");
@@ -166,11 +166,11 @@ function Auth() {
                                     required
                                 />
                             </div>
-                            <div className="flex items-center mb-4">
+                            <div className="flex hidden items-center mb-4">
                                 <input
                                     type="checkbox"
                                     id="isMedicalProfessional"
-                                    checked={isMedicalProfessional}
+                                    checked={true}
                                     onChange={(e) => {
                                         setIsMedicalProfessional(e.target.checked);
                                         if (!e.target.checked) {
