@@ -90,7 +90,7 @@ function Auth() {
                     address:pharmacyAddress,
                     phone,
                     is_medical_professional:true,
-                    is_pharmacy,
+                    is_pharmacy:isPharmacy,
                     ...(isMedicalProfessional && {
                         medical_field:medicalField,
                         license_number:licenseNumber,
