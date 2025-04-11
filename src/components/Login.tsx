@@ -84,17 +84,17 @@ function Auth() {
                     password,
                     role: "principal",
                     name:pharmacyName,
-                    accountNumber,
-                    accountName,
-                    bankCode: selectedBank,
-                    pharmacyAddress,
+                    account_number:accountNumber,
+                    account_name:accountName,
+                    bank_name: selectedBank,
+                    address:pharmacyAddress,
                     phone,
-                    isMedicalProfessional,
-                    isPharmacy,
+                    is_medical_professional:true,
+                    is_pharmacy,
                     ...(isMedicalProfessional && {
-                        medicalField,
-                        licenseNumber,
-                        withdrawalSlots: isPharmacy ? 3 : 1 // Set withdrawal slots based on pharmacy status
+                        medical_field:medicalField,
+                        license_number:licenseNumber,
+                        withdrawal_slots: isPharmacy ? 3 : 1 // Set withdrawal slots based on pharmacy status
                     })
                 };
                 await endpoint.registerUser(registrationData);
