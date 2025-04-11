@@ -29,6 +29,7 @@ function Auth() {
     const [isPharmacy, setIsPharmacy] = useState(false);
     const [medicalField, setMedicalField] = useState("");
     const [licenseNumber, setLicenseNumber] = useState("");
+    const [acceptedTerms, setAcceptedTerms] = useState(false); // State for terms acceptance
 
     // Fetch all banks on component mount
     useEffect(() => {
@@ -65,6 +66,11 @@ function Auth() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!isLogin && !acceptedTerms) {
+            notification.error({message: "You must accept the terms and conditions to register."});
+            return;
+        }
+
         if (password !== retypePassword && !isLogin) {
             notification.error({message: "Passwords do not match."});
             return;
@@ -83,17 +89,17 @@ function Auth() {
                     username,
                     password,
                     role: "principal",
-                    name:pharmacyName,
-                    account_number:accountNumber,
-                    account_name:accountName,
+                    name: pharmacyName,
+                    account_number: accountNumber,
+                    account_name: accountName,
                     bank_name: selectedBank,
-                    address:pharmacyAddress,
+                    address: pharmacyAddress,
                     phone,
-                    is_medical_professional:true,
-                    is_pharmacy:isPharmacy,
+                    is_medical_professional: true,
+                    is_pharmacy: isPharmacy,
                     ...(isMedicalProfessional && {
-                        medical_field:medicalField,
-                        license_number:licenseNumber,
+                        medical_field: medicalField,
+                        license_number: licenseNumber,
                         withdrawal_slots: isPharmacy ? 3 : 1 // Set withdrawal slots based on pharmacy status
                     })
                 };
@@ -113,6 +119,11 @@ function Auth() {
         } finally {
             setLoading(false); // Stop loading
         }
+    };
+
+    const openTermsAndConditions = () => {
+        // Open terms and conditions in a new tab
+        window.open("/terms-and-conditions", "_blank");
     };
 
     return (
@@ -189,20 +200,6 @@ function Auth() {
                             {/* Medical Professional Details (shown if checked) */}
                             {isMedicalProfessional && (
                                 <>
-                                    {/* Pharmacy Checkbox */}
-                                    <div className="flex items-center mb-4">
-                                        <input
-                                            type="checkbox"
-                                            id="isPharmacy"
-                                            checked={isPharmacy}
-                                            onChange={(e) => setIsPharmacy(e.target.checked)}
-                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                        />
-                                        <label htmlFor="isPharmacy" className="ml-2 block text-sm text-gray-700">
-                                            Is this a pharmacy?
-                                        </label>
-                                    </div>
-
                                     {/* Medical Field Selection */}
                                     <select
                                         value={medicalField}
@@ -216,6 +213,33 @@ function Auth() {
                                         <option value="pharmacist">Pharmacist</option>
                                         <option value="other">Other Medical Professional</option>
                                     </select>
+
+                                    {/* Pharmacy Radio Buttons - Moved under medical field */}
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Is this a pharmacy?
+                                        </label>
+                                        <div className="flex items-center space-x-4">
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    className="form-radio h-4 w-4 text-blue-600"
+                                                    checked={isPharmacy === true}
+                                                    onChange={() => setIsPharmacy(true)}
+                                                />
+                                                <span className="ml-2">Yes</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    className="form-radio h-4 w-4 text-blue-600"
+                                                    checked={isPharmacy === false}
+                                                    onChange={() => setIsPharmacy(false)}
+                                                />
+                                                <span className="ml-2">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
 
                                     {/* License Number */}
                                     <div className="relative">
@@ -241,7 +265,6 @@ function Auth() {
                                     onChange={(e) => setPharmacyAddress(e.target.value)}
                                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="Practising Address"
-                                    // required
                                 />
                             </div>
                             {/* Select Bank */}
@@ -295,11 +318,9 @@ function Auth() {
                                 />
                             </div>
                         </>
-                    )
-                    }
+                    )}
 
-                    {/* Password field */
-                    }
+                    {/* Password field */}
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Lock className="h-5 w-5 text-gray-400"/>
@@ -324,10 +345,9 @@ function Auth() {
                         </div>
                     </div>
 
-                    {/* Retype Password field */
-                    }
-                    {
-                        !isLogin && (
+                    {/* Retype Password field */}
+                    {!isLogin && (
+                        <>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Lock className="h-5 w-5 text-gray-400"/>
@@ -351,8 +371,34 @@ function Auth() {
                                     )}
                                 </div>
                             </div>
-                        )
-                    }
+
+                            {/* Terms and Conditions Checkbox */}
+                            <div className="flex items-start">
+                                <div className="flex items-center h-5">
+                                    <input
+                                        id="terms"
+                                        type="checkbox"
+                                        checked={acceptedTerms}
+                                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        required
+                                    />
+                                </div>
+                                <div className="ml-3 text-sm">
+                                    <label htmlFor="terms" className="font-medium text-gray-700">
+                                        I agree to the{' '}
+                                        <button
+                                            type="button"
+                                            onClick={openTermsAndConditions}
+                                            className="text-blue-600 hover:text-blue-500"
+                                        >
+                                            terms and conditions
+                                        </button>
+                                    </label>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     <button
                         type="submit"
@@ -403,8 +449,7 @@ function Auth() {
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }
 
 export default Auth;

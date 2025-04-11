@@ -10,6 +10,7 @@ import AddBenfek from './components/AddBenfek';
 import Supplements from './components/Supplements';
 import Articles from './components/Articles';
 import Podcasts from './components/Podcasts';
+import Terms from "./components/Term"
 
 // Private Route Component
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         {/* Redirect to login if no token, otherwise go to dashboard */}
         <Route path="/" element={<Navigate to={authToken ? "/dashboard" : "/login"} />} />
+        <Route path="/terms-and-conditions" element={ <Terms/>}/>
 
         {/* Login page should not be accessible if logged in */}
         <Route path="/login" element={authToken ? <Navigate to="/dashboard" /> : <Login />} />
