@@ -181,18 +181,7 @@ const TermsAndConditions = () => {
                         </p>
                     </section>
 
-                    {/* 8. Missing Sections (Placeholder) */}
-                    <section className="mb-8 bg-yellow-50 p-4 rounded-lg">
-                        <h2 className="text-2xl font-semibold mb-4 underline">8. Recommended Additional Sections</h2>
-                        <ul className="list-disc pl-6 mb-4">
-                            <li className="mb-2"><span className="font-semibold">Intellectual Property Rights</span> (Who owns platform content?)</li>
-                            <li className="mb-2"><span className="font-semibold">Limitation of Liability</span> (HLS's liability cap for service issues)</li>
-                            <li className="mb-2"><span className="font-semibold">Force Majeure</span> (Unforeseen events affecting service)</li>
-                            <li className="mb-2"><span className="font-semibold">User Conduct & Prohibited Activities</span> (Fraud, spam, misuse)</li>
-                            <li className="mb-2"><span className="font-semibold">Referral & Bonus Terms</span> (Clear rules on incentives)</li>
-                            <li className="mb-2"><span className="font-semibold">Grievance Redressal Mechanism</span> (Formal complaint process)</li>
-                        </ul>
-                    </section>
+                   
 
                     {/* Contact Information */}
                     <section>
