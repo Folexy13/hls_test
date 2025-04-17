@@ -94,7 +94,7 @@ const Account = () => {
                     <div className="hidden md:block">
                         <Table
                             columns={transactionColumns}
-                            dataSource={transactionData}
+                            dataSource={[]}
                             pagination={false}
                             className="w-full"
                             scroll={{x: "100%"}}
