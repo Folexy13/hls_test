@@ -69,7 +69,7 @@ const Purchases = () => {
           <div className="hidden md:block">
             <Table
                 columns={paymentColumns}
-                dataSource={paymentData}
+                dataSource={[]}
                 pagination={false}
                 scroll={{ x: "100%" }}
                 className="w-full mt-6"
@@ -79,7 +79,7 @@ const Purchases = () => {
           {/* Accordion for smaller screens */}
           <div className="block md:hidden">
             <Collapse accordion expandIconPosition="end" className="mt-4">
-              {paymentData.map((payment) => (
+              {[].map((payment) => (
                   <Panel header={payment.packName} key={payment.key}>
                     <p><strong>Details:</strong> {payment.details}</p>
                     <Radio.Group>
