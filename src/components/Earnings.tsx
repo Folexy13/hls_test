@@ -72,7 +72,7 @@ const Earnings = () => {
           {/* Total Earnings Section */}
           <div className="mb-6 p-4 border rounded-lg bg-gray-50">
             <h2 className="text-lg font-semibold text-gray-700">Total Earnings</h2>
-            <p className="text-xl text-gray-900">₦10,500</p>
+            <p className="text-xl text-gray-900">₦0</p>
           </div>
 
 
