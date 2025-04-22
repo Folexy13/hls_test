@@ -80,7 +80,7 @@ const Earnings = () => {
           <div className="hidden md:block">
             <Table
               columns={columns}
-              dataSource={earningsData}
+              dataSource={[]}
               pagination={false}
               scroll={{ x: 800 }} // This enables horizontal scrolling
               className="w-full"
@@ -89,7 +89,7 @@ const Earnings = () => {
           {/* Accordion for smaller screens */}
           <div className="block md:hidden">
             <Collapse accordion>
-              {earningsData.map((earnings:any) => (
+              {[].map((earnings:any) => (
                   <Panel
                       header={`${earnings.receiptNumber} - ₦${earnings.totalPurchase}`}
                       key={earnings.key}
