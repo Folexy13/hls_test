@@ -68,7 +68,7 @@ const Account = () => {
                             Account Transactions
                         </h1>
                         <p className="text-sm sm:text-lg font-semibold">
-                            Account Balance: ₦50,000
+                            Account Balance: ₦0
                         </p>
                     </div>
 
