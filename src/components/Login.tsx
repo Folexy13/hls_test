@@ -30,6 +30,7 @@ function Auth() {
     const [medicalField, setMedicalField] = useState("");
     const [licenseNumber, setLicenseNumber] = useState("");
     const [acceptedTerms, setAcceptedTerms] = useState(false); // State for terms acceptance
+    const [drugCategory, setDrugCategory] = useState(""); // State for drug category selection
 
     // Fetch all banks on component mount
     useEffect(() => {
@@ -100,7 +101,8 @@ function Auth() {
                     ...(isMedicalProfessional && {
                         medical_field: medicalField,
                         license_number: licenseNumber,
-                        withdrawal_slots: isPharmacy ? 3 : 1 // Set withdrawal slots based on pharmacy status
+                        withdrawal_slots: isPharmacy ? 3 : 1, // Set withdrawal slots based on pharmacy status
+                        ...(isPharmacy && { drug_category: drugCategory }) // Include drug category if pharmacy
                     })
                 };
                 await endpoint.registerUser(registrationData);
@@ -240,6 +242,21 @@ function Auth() {
                                             </label>
                                         </div>
                                     </div>
+
+                                    {/* Drug Category Dropdown (shown only if pharmacy is selected) */}
+                                    {isPharmacy && (
+                                        <select
+                                            value={drugCategory}
+                                            onChange={(e) => setDrugCategory(e.target.value)}
+                                            className="block w-full p-2 border border-gray-300 rounded-lg mb-4"
+                                            required={isPharmacy}
+                                        >
+                                            <option value="">Select Drug Category</option>
+                                            <option value="RX meds">RX meds</option>
+                                            <option value="OTC">OTC</option>
+                                            <option value="supplements">Supplements</option>
+                                        </select>
+                                    )}
 
                                     {/* License Number */}
                                     <div className="relative">
