@@ -30,7 +30,7 @@ function Auth() {
     const [medicalField, setMedicalField] = useState("");
     const [licenseNumber, setLicenseNumber] = useState("");
     const [acceptedTerms, setAcceptedTerms] = useState(false); // State for terms acceptance
-    const [drugCategory, setDrugCategory] = useState(""); // State for drug category selection
+    // const [drugCategory, setDrugCategory] = useState(""); // State for drug category selection
 
     // Fetch all banks on component mount
     useEffect(() => {
@@ -102,7 +102,7 @@ function Auth() {
                         medical_field: medicalField,
                         license_number: licenseNumber,
                         withdrawal_slots: isPharmacy ? 3 : 1, // Set withdrawal slots based on pharmacy status
-                        ...(isPharmacy && { drug_category: drugCategory }) // Include drug category if pharmacy
+                        // ...(isPharmacy && { drug_category: drugCategory }) // Include drug category if pharmacy
                     })
                 };
                 await endpoint.registerUser(registrationData);
@@ -244,7 +244,7 @@ function Auth() {
                                     </div>
 
                                     {/* Drug Category Dropdown (shown only if pharmacy is selected) */}
-                                    {isPharmacy && (
+                                    {/* {isPharmacy && (
                                         <select
                                             value={drugCategory}
                                             onChange={(e) => setDrugCategory(e.target.value)}
@@ -256,7 +256,7 @@ function Auth() {
                                             <option value="OTC">OTC</option>
                                             <option value="supplements">Supplements</option>
                                         </select>
-                                    )}
+                                    )} */}
 
                                     {/* License Number */}
                                     <div className="relative">
