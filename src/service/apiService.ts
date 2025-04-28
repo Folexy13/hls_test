@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// export const apiBaseUrl = "http://localhost:8000/api"; // Local API URL
+// export const apiBaseUrl = "http://localhost:8001/api"; // Local API URL
 export const apiBaseUrl = "https://www.hlsnigeria.com.ng/api"; // Live API URL
 
 // Function to determine content type

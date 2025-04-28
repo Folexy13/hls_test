@@ -30,6 +30,8 @@ function Dashboard() {
     const [showModal, setShowModal] = useState(false);
     const [userProfile, setUserProfile] = useState<any>({});
     const balanceRef = localStorage.getItem("isBalance");
+        const isPharmacy = JSON.parse(localStorage.getItem("isPharmacy")|| "false")
+
 
     const fetchWallet = async () => {
         const authToken = localStorage.getItem("authToken") ?? "";
@@ -53,6 +55,7 @@ function Dashboard() {
                 const resp = await api.get(apiBaseUrl + "/customers/" + userId + "/")
                 setUserProfile(resp.data);
                 setPharmacy(resp.data.name.toUpperCase());
+                localStorage.setItem("isPharmacy", resp.data.is_pharmacy);
             };
             fetchPharmacyname();
         }
@@ -157,7 +160,7 @@ function Dashboard() {
                     <h2 className="text-lg sm:text-xl font-semibold mb-4">Publish</h2>
                     <div className="grid grid-cols-3 gap-4 sm:gap-6">
                         {[
-                            { icon: Pill, label: "Supplements", path: "/supplements" },
+                            { icon: Pill, label: `${isPharmacy ? "Medications":"Supplements"}`, path: "/supplements" },
                             { icon: Newspaper, label: "Articles", path: "/articles" },
                             { icon: Mic, label: "Podcasts", path: "/podcasts" },
                         ].map(({ icon: Icon, label, path }) => (
