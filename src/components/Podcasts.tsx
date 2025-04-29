@@ -24,7 +24,7 @@ function Podcasts() {
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
-        const response = await api.get(`${apiBaseUrl}/podcasts/`);
+        const response = await api.get(`${apiBaseUrl}/podcasts/?mine=true`);
         setFileList(response.data); // Update the state with fetched podcasts
       } catch (error) {
         console.error("Error fetching podcasts:", error);
