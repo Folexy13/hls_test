@@ -74,6 +74,12 @@ const [drugCategory, setDrugCategory] = useState(""); // State for drug category
     formData.append("price", values.price);
     formData.append("expiry", values.expiry.toISOString());
     formData.append("drug_category", values.drugCategory);
+    const config = {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+};
+
 
     // Include the image file only if it exists
     if (fileList.length > 0 && fileList[0].originFileObj) {
@@ -93,7 +99,9 @@ const [drugCategory, setDrugCategory] = useState(""); // State for drug category
           `${apiBaseUrl}/supplements/${editingSupplement.id}/`,
           formData,
           {
-            headers: getContentType("multipart/form-data"),
+            headers: {
+    'Content-Type': 'multipart/form-data'
+  }
           }
         );
         setSupplements((prev) =>
@@ -105,7 +113,9 @@ const [drugCategory, setDrugCategory] = useState(""); // State for drug category
       } else {
         // Create new supplement
         response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
-          headers: getContentType("multipart/form-data"),
+          headers: {
+    'Content-Type': 'multipart/form-data'
+  }
         });
         setSupplements((prev) => [...prev, response.data]);
         message.success("Supplement added successfully");
