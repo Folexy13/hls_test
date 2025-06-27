@@ -117,6 +117,7 @@ const [drugCategory, setDrugCategory] = useState(""); // State for drug category
       setEditingSupplement(null);
     } catch (error) {
       console.error(error);
+      alert(JSON.stringify(error))
       message.error(
         editingSupplement
           ? "Failed to update supplement"
