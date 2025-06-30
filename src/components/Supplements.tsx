@@ -67,76 +67,88 @@ const [drugCategory, setDrugCategory] = useState(""); // State for drug category
     }
   };
 
-  const handleSubmit = async (values: any) => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("price", values.price);
-    formData.append("expiry", values.expiry.toISOString());
-    formData.append("drug_category", values.drugCategory);
-    const config = {
-  headers: {
-    'Content-Type': 'multipart/form-data'
+const handleSubmit = async (values: any) => {
+  setLoading(true);
+
+  // Create JSON payload
+  const payload = {
+    name: values.name,
+    price: values.price,
+    expiry: values.expiry.toISOString(),
+    drug_category: values.drugCategory,
+  };
+
+  // Validate image presence
+  if (fileList.length === 0 || !fileList[0].originFileObj) {
+    message.error("Image cannot be empty");
+    setLoading(false);
+    return;
   }
-};
 
+  try {
+    let response: any;
+    
+    // Create FormData for image upload
+    const imageFormData = new FormData();
+    imageFormData.append("image", fileList[0].originFileObj);
 
-    // Include the image file only if it exists
-    if (fileList.length > 0 && fileList[0].originFileObj) {
-      formData.append("image", fileList[0].originFileObj);
-    }
-    if (!formData.get("image")) {
-      message.error("Image cannot be empty");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      let response: any;
-      if (editingSupplement) {
-        // Update existing supplement
-        response = await api.put(
-          `${apiBaseUrl}/supplements/${editingSupplement.id}/`,
-          formData,
+    if (editingSupplement) {
+      // Update existing supplement
+      response = await api.put(
+        `${apiBaseUrl}/supplements/${editingSupplement.id}/`,
+        { ...payload, image: fileList[0].originFileObj },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      setSupplements((prev) =>
+        prev.map((item) =>
+          item.id === editingSupplement.id ? response.data : item
+        )
+      );
+      message.success("Supplement updated successfully");
+    } else {
+      // Create new supplement
+      response = await api.post(`${apiBaseUrl}/supplements/`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // Upload image separately if needed
+      if (response.data.id) {
+        await api.post(
+          `${apiBaseUrl}/supplements/${response.data.id}/upload-image/`,
+          imageFormData,
           {
             headers: {
-    'Content-Type': 'multipart/form-data'
-  }
+              'Content-Type': 'multipart/form-data'
+            }
           }
         );
-        setSupplements((prev) =>
-          prev.map((item) =>
-            item.id === editingSupplement.id ? response.data : item
-          )
-        );
-        message.success("Supplement updated successfully");
-      } else {
-        // Create new supplement
-        response = await api.post(`${apiBaseUrl}/supplements/`, formData, {
-          headers: {
-    'Content-Type': 'multipart/form-data'
-  }
-        });
-        setSupplements((prev) => [...prev, response.data]);
-        message.success("Supplement added successfully");
       }
-
-      setIsModalVisible(false);
-      form.resetFields();
-      setFileList([]);
-      setEditingSupplement(null);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error))
-      message.error(
-        editingSupplement
-          ? "Failed to update supplement"
-          : "Failed to add supplement"
-      );
-    } finally {
-      setLoading(false);
+      
+      setSupplements((prev) => [...prev, response.data]);
+      message.success("Supplement added successfully");
     }
-  };
+
+    setIsModalVisible(false);
+    form.resetFields();
+    setFileList([]);
+    setEditingSupplement(null);
+  } catch (error) {
+    console.error(error);
+    message.error(
+      editingSupplement
+        ? "Failed to update supplement"
+        : "Failed to add supplement"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
     setFileList(fileList);
