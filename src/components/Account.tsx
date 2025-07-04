@@ -75,12 +75,12 @@ const Account = () => {
                     {/* Accordion for Small Screens */}
                     <div className="block md:hidden">
                         <Collapse accordion expandIconPosition="end">
-                            {transactionData.map((transaction) => (
-                                <Panel header={transaction.reference} key={transaction.key}>
-                                    <p><strong>Type:</strong> {transaction.type}</p>
-                                    <p><strong>Status:</strong> {transaction.status}</p>
-                                    <p><strong>Amount:</strong> {transaction.amount}</p>
-                                    <p><strong>Date:</strong> {transaction.date}</p>
+                            {[].map((transaction) => (
+                                <Panel header={transaction?.reference} key={transaction.key}>
+                                    <p><strong>Type:</strong> {transaction?.type}</p>
+                                    <p><strong>Status:</strong> {transaction?.status}</p>
+                                    <p><strong>Amount:</strong> {transaction?.amount}</p>
+                                    <p><strong>Date:</strong> {transaction?.date}</p>
                                     <Button
                                         type="link">{transaction.type == "Purchase" ? "Approve" : "View Details"}</Button>
                                 </Panel>
